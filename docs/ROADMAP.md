@@ -1055,7 +1055,7 @@ Identify vendor/manufacturer of discovered devices.
 ### Tasks
 
 * [x] Integrate MAC OUI vendor database
-* [ ] Detect vendor from HTTP headers
+* [x] Detect vendor from HTTP headers
 * [ ] Detect vendor from TLS certificates
 * [ ] Create vendor detection engine
 * [ ] Add vendor field to asset database
