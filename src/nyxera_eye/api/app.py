@@ -272,6 +272,56 @@ if FastAPI is not None:
     async def frontend_ops_feed() -> dict:
         return ops_runtime_store.snapshot()
 
+    @app.get("/frontend/devices")
+    async def frontend_devices(
+        q: str | None = None,
+        severity: str | None = None,
+        country: str | None = None,
+        vendor: str | None = None,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> dict:
+        return ops_runtime_store.list_devices(
+            q=q,
+            severity=severity,
+            country=country,
+            vendor=vendor,
+            limit=limit,
+            offset=offset,
+        )
+
+    @app.get("/frontend/devices/{device_id}")
+    async def frontend_device_detail(device_id: str) -> dict:
+        device = ops_runtime_store.get_device(device_id=device_id)
+        if device is None:
+            raise HTTPException(status_code=404, detail="device not found")
+        return {"device": device}
+
+    @app.get("/frontend/findings")
+    async def frontend_findings(
+        q: str | None = None,
+        severity: str | None = None,
+        status: str | None = None,
+        device_id: str | None = None,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> dict:
+        return ops_runtime_store.list_findings(
+            q=q,
+            severity=severity,
+            status=status,
+            device_id=device_id,
+            limit=limit,
+            offset=offset,
+        )
+
+    @app.get("/frontend/findings/{finding_id}")
+    async def frontend_finding_detail(finding_id: str) -> dict:
+        finding = ops_runtime_store.get_finding(finding_id=finding_id)
+        if finding is None:
+            raise HTTPException(status_code=404, detail="finding not found")
+        return {"finding": finding}
+
     @app.get("/frontend/settings")
     async def frontend_get_settings(record: TokenRecord = Depends(_require_analyst)) -> dict:
         return {"ok": True, "settings": frontend_settings, "user_role": record.role}
