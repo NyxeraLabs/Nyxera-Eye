@@ -43,3 +43,14 @@ def test_deception_detection_normal_traffic() -> None:
     )
 
     assert signal.suspicious is False
+
+
+def test_deception_detection_flags_moderate_timing_spike() -> None:
+    signal = detect_deception(
+        tcp_jitter_ms_series=[11.0, 12.0, 10.5],
+        observed_banners=["Apache", "Apache"],
+        response_time_ms_series=[40.0, 42.0, 170.0],
+    )
+
+    assert signal.timing_anomaly is True
+    assert signal.suspicious is True
