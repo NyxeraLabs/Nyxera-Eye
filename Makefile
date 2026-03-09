@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 
-.PHONY: help install install-poetry install-venv test compile infra-check e2e qa up down run-api frontend-install frontend-dev frontend-build deploy docs
+.PHONY: help install install-poetry install-venv test compile infra-check e2e qa up down run-api frontend-install frontend-dev frontend-build nginx-certs deploy docs
 
 help:
 	@echo "Nyxera Eye Make Targets"
@@ -18,6 +18,7 @@ help:
 	@echo "  make frontend-install# Install frontend dependencies"
 	@echo "  make frontend-dev    # Run Next.js frontend dev server"
 	@echo "  make frontend-build  # Build frontend production bundle"
+	@echo "  make nginx-certs     # Generate local self-signed TLS certs for nginx"
 	@echo "  make deploy          # Start infra + API and print frontend instructions"
 	@echo "  make docs            # Print docs entry points"
 
@@ -66,15 +67,32 @@ frontend-install:
 	cd frontend && npm install
 
 frontend-dev:
+	@if [ ! -x frontend/node_modules/.bin/next ]; then \
+		echo "Frontend dependencies not found. Installing..."; \
+		$(MAKE) frontend-install; \
+	fi
 	cd frontend && npm run dev
 
 frontend-build:
+	@if [ ! -x frontend/node_modules/.bin/next ]; then \
+		echo "Frontend dependencies not found. Installing..."; \
+		$(MAKE) frontend-install; \
+	fi
 	cd frontend && npm run build
 
-deploy: up
+nginx-certs:
+	@mkdir -p config/nginx/certs
+	@openssl req -x509 -nodes -newkey rsa:2048 \
+		-keyout config/nginx/certs/nyxera.key \
+		-out config/nginx/certs/nyxera.crt \
+		-days 3650 \
+		-subj "/C=US/ST=Local/L=Local/O=Nyxera/CN=127.0.0.1"
+	@echo "Generated local TLS certs under config/nginx/certs/"
+
+deploy: nginx-certs up
 	@echo "Infrastructure started."
 	@echo "Run API: make run-api"
-	@echo "Run frontend: make frontend-dev"
+	@echo "Run frontend: make frontend-dev (auto-installs deps if needed)"
 
 docs:
 	@echo "Manuals index: docs/manuals/INDEX.md"

@@ -7,7 +7,14 @@ frontend/node_modules/
 frontend/.next/
 frontend/out/
 frontend/.turbo/
+frontend/certificates/
 
 # Local env and secrets
 .env
 .env.local
+
+# TLS keys/certs (never commit private key material)
+*.key
+*.crt
+config/nginx/certs/*
+!config/nginx/certs/README.md
