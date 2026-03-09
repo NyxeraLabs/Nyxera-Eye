@@ -1,0 +1,32 @@
+# Copyright (c) 2026 NyxeraLabs
+# Author: José María Micoli
+# Licensed under BSL 1.1
+# Change Date: 2033-02-17 → Apache-2.0
+#
+# You may:
+# ✔ Study
+# ✔ Modify
+# ✔ Use for internal security testing
+#
+# You may NOT:
+# ✘ Offer as a commercial service
+# ✘ Sell derived competing products
+
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auto Tag
+        uses: mathieudutour/github-tag-action@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
