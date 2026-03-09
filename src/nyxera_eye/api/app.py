@@ -20,6 +20,11 @@ except ImportError:  # pragma: no cover
 from nyxera_eye.api.models import SearchFilters
 from nyxera_eye.api.opensearch import OpenSearchQueryService
 from nyxera_eye.api.target_cards import build_target_card
+from nyxera_eye.api.command_center import (
+    build_global_exposure_map_points,
+    build_mining_telemetry,
+    build_vulnerability_distribution,
+)
 
 query_service = OpenSearchQueryService()
 
@@ -51,3 +56,23 @@ if FastAPI is not None:
     @app.post("/ui/target-card")
     async def target_card(document: dict) -> dict[str, str | float | int | None]:
         return build_target_card(document)
+
+    @app.post("/command-center/map")
+    async def global_exposure_map(devices: list[dict]) -> list[dict[str, float | str | None]]:
+        return build_global_exposure_map_points(devices)
+
+    @app.post("/command-center/vulnerability-distribution")
+    async def vulnerability_distribution(devices: list[dict]) -> dict[str, int]:
+        return build_vulnerability_distribution(devices)
+
+    @app.get("/command-center/telemetry")
+    async def mining_telemetry(
+        scan_throughput: float = 0.0,
+        probe_latency_ms: float = 0.0,
+        active_discoveries: int = 0,
+    ) -> dict[str, float | int]:
+        return build_mining_telemetry(
+            scan_throughput=scan_throughput,
+            probe_latency_ms=probe_latency_ms,
+            active_discoveries=active_discoveries,
+        )

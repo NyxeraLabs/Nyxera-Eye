@@ -494,9 +494,9 @@ Mapbox / Leaflet
 Features:
 
 ```
-[ ] commit: global exposure map
-[ ] commit: vulnerability distribution charts
-[ ] commit: real-time mining telemetry
+[x] commit: global exposure map
+[x] commit: vulnerability distribution charts
+[x] commit: real-time mining telemetry
 ```
 
 Telemetry overlays:
