@@ -1141,13 +1141,13 @@ Ensure the scanner covers targets intelligently instead of repeating a small sub
 
 ### Tasks
 
-* [ ] Implement target scheduling engine
-* [ ] Implement priority scan queue
-* [ ] Add random target sampling
-* [ ] Add cooldown timer for scanned targets
-* [ ] Track last scan timestamp
-* [ ] Prevent repeated short-loop scanning
-* [ ] Improve scan coverage metrics
+* [x] Implement target scheduling engine
+* [x] Implement priority scan queue
+* [x] Add random target sampling
+* [x] Add cooldown timer for scanned targets
+* [x] Track last scan timestamp
+* [x] Prevent repeated short-loop scanning
+* [x] Improve scan coverage metrics
 
 ### Commit Plan
 

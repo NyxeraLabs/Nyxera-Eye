@@ -11,8 +11,3 @@
 # You may NOT:
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
-
-from internal.database.models.asset import AssetFingerprintRecord, AssetRecord, AssetVulnerabilityRecord
-from internal.database.models.coverage import CoverageRecord
-
-__all__ = ["AssetFingerprintRecord", "AssetRecord", "AssetVulnerabilityRecord", "CoverageRecord"]
