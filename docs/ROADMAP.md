@@ -537,8 +537,8 @@ RTSP proxy gateway
 Features:
 
 ```
-[ ] commit: MITRE ATT&CK mapping for IoT/ICS
-[ ] commit: deception detection engine
+[x] commit: MITRE ATT&CK mapping for IoT/ICS
+[x] commit: deception detection engine
 ```
 
 Detection logic:
