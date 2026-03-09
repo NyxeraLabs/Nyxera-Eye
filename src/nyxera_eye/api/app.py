@@ -12,8 +12,10 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
+import os
+
 try:
-    from fastapi import FastAPI
+    from fastapi import Depends, FastAPI, Header, HTTPException
 except ImportError:  # pragma: no cover
     FastAPI = None
 
@@ -25,11 +27,47 @@ from nyxera_eye.api.command_center import (
     build_mining_telemetry,
     build_vulnerability_distribution,
 )
+from nyxera_eye.security import APITokenStore, RateLimiter, TokenRecord, role_allows
 
 query_service = OpenSearchQueryService()
+token_store = APITokenStore()
+rate_limiter = RateLimiter(
+    max_requests=int(os.getenv("NYXERA_API_RATE_LIMIT_REQUESTS", "120")),
+    window_seconds=int(os.getenv("NYXERA_API_RATE_LIMIT_WINDOW_SECONDS", "60")),
+)
+
+bootstrap_token = os.getenv("NYXERA_API_BOOTSTRAP_TOKEN")
+if bootstrap_token:
+    token_store.add_token(
+        token=bootstrap_token,
+        subject="bootstrap",
+        role=os.getenv("NYXERA_API_BOOTSTRAP_ROLE", "admin"),
+    )
+
+
+def _authorize(token: str | None, required_role: str) -> TokenRecord:
+    if token is None or not token.strip():
+        raise HTTPException(status_code=401, detail="missing API token")
+    record = token_store.verify(token)
+    if record is None:
+        raise HTTPException(status_code=401, detail="invalid API token")
+    if not role_allows(record.role, required_role):
+        raise HTTPException(status_code=403, detail=f"requires role '{required_role}' or above")
+    if not rate_limiter.allow(record.subject):
+        raise HTTPException(status_code=429, detail="rate limit exceeded")
+    return record
 
 if FastAPI is not None:
     app = FastAPI(title="Nyxera Eye API", version="0.1.0")
+
+    async def _require_analyst(x_api_token: str | None = Header(default=None, alias="X-API-Token")) -> TokenRecord:
+        return _authorize(x_api_token, required_role="analyst")
+
+    async def _require_operator(x_api_token: str | None = Header(default=None, alias="X-API-Token")) -> TokenRecord:
+        return _authorize(x_api_token, required_role="operator")
+
+    async def _require_admin(x_api_token: str | None = Header(default=None, alias="X-API-Token")) -> TokenRecord:
+        return _authorize(x_api_token, required_role="admin")
 
     @app.get("/health")
     async def health() -> dict[str, str]:
@@ -43,6 +81,7 @@ if FastAPI is not None:
         vulnerability: str | None = None,
         country: str | None = None,
         exposure_score_min: float | None = None,
+        _: TokenRecord = Depends(_require_analyst),
     ) -> dict:
         filters = SearchFilters(
             asn=asn,
@@ -54,15 +93,24 @@ if FastAPI is not None:
         return query_service.build_device_query(q, filters)
 
     @app.post("/ui/target-card")
-    async def target_card(document: dict) -> dict[str, str | float | int | None]:
+    async def target_card(
+        document: dict,
+        _: TokenRecord = Depends(_require_analyst),
+    ) -> dict[str, str | float | int | None]:
         return build_target_card(document)
 
     @app.post("/command-center/map")
-    async def global_exposure_map(devices: list[dict]) -> list[dict[str, float | str | None]]:
+    async def global_exposure_map(
+        devices: list[dict],
+        _: TokenRecord = Depends(_require_operator),
+    ) -> list[dict[str, float | str | None]]:
         return build_global_exposure_map_points(devices)
 
     @app.post("/command-center/vulnerability-distribution")
-    async def vulnerability_distribution(devices: list[dict]) -> dict[str, int]:
+    async def vulnerability_distribution(
+        devices: list[dict],
+        _: TokenRecord = Depends(_require_operator),
+    ) -> dict[str, int]:
         return build_vulnerability_distribution(devices)
 
     @app.get("/command-center/telemetry")
@@ -70,6 +118,7 @@ if FastAPI is not None:
         scan_throughput: float = 0.0,
         probe_latency_ms: float = 0.0,
         active_discoveries: int = 0,
+        _: TokenRecord = Depends(_require_admin),
     ) -> dict[str, float | int]:
         return build_mining_telemetry(
             scan_throughput=scan_throughput,

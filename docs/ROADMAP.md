@@ -655,10 +655,10 @@ CSV
 Platform security:
 
 ```
-[ ] commit: RBAC authentication
-[ ] commit: API token system
-[ ] commit: encrypted secrets
-[ ] commit: request rate limiting
+[x] commit: RBAC authentication
+[x] commit: API token system
+[x] commit: encrypted secrets
+[x] commit: request rate limiting
 ```
 
 Audit system:
