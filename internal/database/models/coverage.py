@@ -12,7 +12,11 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from internal.database.models.asset import AssetFingerprintRecord, AssetRecord, AssetVulnerabilityRecord
-from internal.database.models.coverage import CoverageRecord
+from dataclasses import dataclass
 
-__all__ = ["AssetFingerprintRecord", "AssetRecord", "AssetVulnerabilityRecord", "CoverageRecord"]
+
+@dataclass(slots=True)
+class CoverageRecord:
+    target_id: str
+    last_scan_at: float
+    priority: int

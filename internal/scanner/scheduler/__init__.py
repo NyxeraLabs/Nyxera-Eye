@@ -12,7 +12,6 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from internal.database.models.asset import AssetFingerprintRecord, AssetRecord, AssetVulnerabilityRecord
-from internal.database.models.coverage import CoverageRecord
+from internal.scanner.scheduler.coverage import CoverageSnapshot, ScanCoverageEngine
 
-__all__ = ["AssetFingerprintRecord", "AssetRecord", "AssetVulnerabilityRecord", "CoverageRecord"]
+__all__ = ["CoverageSnapshot", "ScanCoverageEngine"]

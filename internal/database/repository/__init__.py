@@ -13,5 +13,6 @@
 # ✘ Sell derived competing products
 
 from internal.database.repository.asset_repository import AssetRepository
+from internal.database.repository.coverage_repository import CoverageRepository
 
-__all__ = ["AssetRepository"]
+__all__ = ["AssetRepository", "CoverageRepository"]
