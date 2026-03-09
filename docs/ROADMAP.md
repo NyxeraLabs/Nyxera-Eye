@@ -244,9 +244,9 @@ Purpose: decouple ingestion from processing.
 Workers:
 
 ```
-[ ] commit: Banner parsing worker
-[ ] commit: Service detection worker
-[ ] commit: Device enrichment worker
+[x] commit: Banner parsing worker
+[x] commit: Service detection worker
+[x] commit: Device enrichment worker
 ```
 
 Pipeline:

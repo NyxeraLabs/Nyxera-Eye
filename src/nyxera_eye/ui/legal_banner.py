@@ -15,7 +15,7 @@
 
 def legal_banner_text() -> str:
     return (
-        "Nyxera Eye - Authorized Security Research Platform\\n"
+        "Nyxera Eye - Authorized Security Research Platform\n"
         "Legal notice: Use is restricted to internal security testing and authorized assessments. "
         "Unauthorized access, brute forcing, and exploitation are prohibited."
     )
