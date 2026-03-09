@@ -74,6 +74,19 @@ services:
     volumes:
       - minio_data:/data
 
+  minio-init:
+    image: minio/mc:RELEASE.2026-02-17T01-33-45Z
+    container_name: nyxera-minio-init
+    depends_on:
+      - minio
+    restart: "no"
+    environment:
+      MINIO_ROOT_USER: nyxeraadmin
+      MINIO_ROOT_PASSWORD: nyxera-change-me
+    entrypoint: ["/bin/sh", "/bootstrap.sh"]
+    volumes:
+      - ./config/minio/bootstrap.sh:/bootstrap.sh:ro
+
   prometheus:
     image: prom/prometheus:v2.54.1
     container_name: nyxera-prometheus
