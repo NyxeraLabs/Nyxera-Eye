@@ -2,133 +2,105 @@
 Copyright (c) 2026 NyxeraLabs
 Author: Jose Maria Micoli
 Licensed under BSL 1.1
-Change Date: 2033-03-09 -> Apache-2.0
+Change Date: 2033-02-17 -> Apache-2.0
 -->
 
 # Nyxera Eye
 
-Nyxera Eye is an IoT and ICS attack surface intelligence platform for authorized security research and defensive operations.
+Nyxera Eye is a continuous asset intelligence platform for authorized IoT, ICS, and network exposure analysis.
 
-It combines OSINT ingestion, service fingerprinting, vulnerability intelligence, and operator-facing investigation surfaces into one workflow-oriented product.
+It combines discovery-style scanning, service metadata, web fingerprinting, vendor and firmware hints, vulnerability context, and operator-facing investigation workflows in one platform.
 
-## Product Highlights
+## Current Platform Capabilities
 
-- Multi-source OSINT ingestion (Shodan, Censys, ZoomEye)
-- Worker-based processing and canonical schema normalization
-- Fingerprinting stack (favicon MMH3, JA3, JARM)
-- Vulnerability intelligence (CVE mirror, firmware mapping, exploit detection, risk scoring)
-- Operator interfaces (TUI workflows and API command center primitives)
-- Media and vision metadata pipeline
-- Change detection across infrastructure snapshots
-- Security controls (RBAC, API tokens, encrypted secrets, rate limiting)
-- Observability metrics and tracing utilities
+- Accumulating scan runtime with stable device identity and finding history
+- Searchable device registry with severity, country, vendor, and text filters
+- Searchable findings registry with severity, status, and device filters
+- Device investigation view with services, fingerprint metadata, linked findings, and recent events
+- Dashboard charts for findings severity, status, vendor distribution, port distribution, country coverage, and scan growth
+- World map visualization for assets and events
+- API token auth, RBAC, rate limiting, and audit logging
+- Python backend plus Next.js/TypeScript operator UI
 
-## Operating Model
+## Main UI Surfaces
 
-Nyxera Eye is built around two safety modes:
-
-- Passive Intelligence Mode (default): non-intrusive intelligence collection only
-- Authorized Scope Mode: deeper actions allowed only for explicitly approved scope
-
-Compliance controls include blacklist support, opt-out registry, audit logging, and legal disclosure artifacts.
+- `/` dashboard
+- `/devices` full device registry
+- `/devices/{deviceId}` device investigation
+- `/findings` findings registry and action panel
+- `/map` world map
+- `/events` event stream
+- `/settings` runtime settings
+- `/audit` audit ledger
 
 ## Quick Start
 
 ```bash
 cd /home/xoce/Workspace/Nyxera-Eye
-make install
-make qa
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install pytest fastapi httpx arq uvicorn
+cd frontend && npm ci && cd ..
 ```
 
-Expected E2E success line:
-
-```text
-E2E full roadmap validation passed (local deterministic path).
-```
-
-## Makefile Workflow
-
-Core commands:
+Run the key local validation commands:
 
 ```bash
-make help
-make install
-make compile
-make test
-make infra-check
-make e2e
-make qa
-make up
-make down
-make run-api
-make run-all
-make stop-all
+./.venv/bin/python scripts/lint_repo.py
+./.venv/bin/pytest tests/test_ops_runtime.py -q
+docker compose config -q
+cd frontend && npm run typecheck
 ```
+
+## Active Runtime Endpoints
+
+Core live frontend API routes:
+
+- `GET /frontend/ops-feed`
+- `POST /frontend/scan`
+- `POST /frontend/scan/start`
+- `POST /frontend/scan/stop`
+- `GET /frontend/scan/status`
+- `GET /frontend/devices`
+- `GET /frontend/devices/{device_id}`
+- `GET /frontend/findings`
+- `GET /frontend/findings/{finding_id}`
+- `POST /frontend/findings/{finding_id}/action`
+- `GET /frontend/findings/{finding_id}/export`
+
+## Repository Notes
+
+- Active backend runtime currently lives under `src/nyxera_eye/api`.
+- Active web runtime currently lives under `frontend/app`.
+- Architecture target documentation still exists under `docs/ARCHITECTURE.md` and `docs/ARCHITECTURE_MIGRATION.md`.
+- Generated frontend artifacts such as `frontend/.next/` and dependencies in `frontend/node_modules/` are ignored by git.
 
 ## Documentation
 
-- Manuals index: [docs/manuals/INDEX.md](docs/manuals/INDEX.md)
-- QA runbook: [docs/RUNBOOK.md](docs/RUNBOOK.md)
-- E2E audit: [docs/E2E_AUDIT.md](docs/E2E_AUDIT.md)
-- Development sprint logs: [docs/dev-logs/INDEX.md](docs/dev-logs/INDEX.md)
-- Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
-- Security policy: [SECURITY.md](SECURITY.md)
-- Disclaimer: [DISCLAIMER.md](DISCLAIMER.md)
+- [docs/manuals/INDEX.md](docs/manuals/INDEX.md)
+- [docs/RUNBOOK.md](docs/RUNBOOK.md)
+- [docs/ROADMAP.md](docs/ROADMAP.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/ARCHITECTURE_MIGRATION.md](docs/ARCHITECTURE_MIGRATION.md)
+- [docs/COMPLIANCE.md](docs/COMPLIANCE.md)
+- [docs/ETHICS.md](docs/ETHICS.md)
+- [docs/INFRA.md](docs/INFRA.md)
 
-## Architecture Snapshot
-
-```text
-OSINT Sources
--> Collectors
--> Queue
--> Processing Workers
--> Canonical Device Schema
--> Storage (MongoDB/OpenSearch/MinIO)
--> API + TUI/Web Investigation Surfaces
-```
-
-## Deployment Notes
-
-Infrastructure configuration is defined in `docker-compose.yml`.
-
-Validate deployment config before startup:
-
-```bash
-make infra-check
-```
-
-Start local stack:
-
-```bash
-make run-all
-```
-
-Main HTTPS endpoints:
-
-- Frontend: `https://127.0.0.1:8449`
-- API Swagger: `https://127.0.0.1:8448/api/docs`
-- API OpenAPI: `https://127.0.0.1:8448/api/openapi.json`
-- Audit events API (admin): `https://127.0.0.1:8448/audit/events`
-
-Default local admin credentials:
-
-- Username: `admin`
-- Password: `admin-change-me`
-
-## Disclaimer
+## Safety
 
 Nyxera Eye is for authorized security testing and defensive research only.
 
-Do not use this project for unauthorized access, disruption, or exploitation. You are responsible for legal compliance in your jurisdiction and target environment.
+- No brute force
+- No exploitation
+- No intrusive scanning outside explicit approved scope
 
-This software is provided "as is" without warranties; maintainers and contributors are not liable for misuse.
+Read:
 
-Full text: [DISCLAIMER.md](DISCLAIMER.md)
+- [docs/COMPLIANCE.md](docs/COMPLIANCE.md)
+- [docs/ETHICS.md](docs/ETHICS.md)
+- [docs/SECURITY_DISCLOSURE.md](docs/SECURITY_DISCLOSURE.md)
 
 ## License
 
-Business Source License 1.1 (BSL). See [LICENSE](LICENSE).
-
-## Copyright
-
-Copyright (c) 2026 NyxeraLabs. All rights reserved.
+Business Source License 1.1. See [LICENSE](LICENSE).

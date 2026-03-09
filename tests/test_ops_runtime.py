@@ -46,9 +46,11 @@ def test_ops_runtime_run_scan_accumulates_inventory_and_findings() -> None:
     assert snapshot["devices"][0]["fingerprints"]["favicon_hash"] is not None
     assert snapshot["devices"][0]["fingerprints"]["html_title"]
     assert snapshot["devices"][0]["iot_metadata"]["model"]
+    assert snapshot["devices"][0]["city"]
     assert len(initial["devices"]) < len(snapshot["devices"])
     assert snapshot["metrics"]["devices_by_vendor"]
     assert snapshot["metrics"]["services_by_port"]
+    assert len({device["ip"] for device in snapshot["devices"]}) == len(snapshot["devices"])
 
 
 def test_ops_runtime_supports_device_and_finding_filters() -> None:

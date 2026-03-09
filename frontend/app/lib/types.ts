@@ -63,6 +63,7 @@ export type DeviceLocation = {
   lon: number;
   severity: Severity;
   country: string;
+  city?: string;
   services?: AssetService[];
   fingerprints?: AssetFingerprint | null;
   iotMetadata?: AssetIoTMetadata | null;

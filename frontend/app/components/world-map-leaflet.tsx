@@ -55,6 +55,7 @@ export default function WorldMapLeaflet({ devices, events, showDevices = true, s
                 <div className="space-y-1 text-sm">
                   <p><strong>Asset:</strong> {device.name}</p>
                   <p><strong>IP:</strong> {device.ip}</p>
+                  <p><strong>City:</strong> {device.city || "-"}</p>
                   <p><strong>Country:</strong> {device.country}</p>
                   <p><strong>Severity:</strong> {device.severity.toUpperCase()}</p>
                 </div>

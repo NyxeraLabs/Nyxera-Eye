@@ -97,6 +97,7 @@ function normalizeDevice(input: unknown, fallbackId: string = "device"): DeviceL
     lon: Number(record.longitude ?? record.lon ?? 0),
     severity: normalizeSeverity(record.severity),
     country: String(record.country || "N/A"),
+    city: String(record.city || ""),
     services: Array.isArray(record.services)
       ? (record.services as Array<Record<string, unknown>>).map((service) => ({
           port: Number(service.port ?? 0),

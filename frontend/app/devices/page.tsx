@@ -111,7 +111,10 @@ export default function DevicesPage() {
                       {device.iotMetadata?.vendor || "-"}
                       <p className="text-xs text-slate-500">{device.iotMetadata?.model || "-"}</p>
                     </td>
-                    <td className="py-3 text-slate-300">{device.country}</td>
+                    <td className="py-3 text-slate-300">
+                      {device.city || "-"}
+                      <p className="text-xs text-slate-500">{device.country}</p>
+                    </td>
                     <td className="py-3 text-slate-300">{device.severity}</td>
                     <td className="py-3 text-slate-300">{device.scanCount || 0}</td>
                     <td className="py-3">

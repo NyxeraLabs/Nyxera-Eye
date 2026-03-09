@@ -23,15 +23,46 @@ from time import sleep
 from nyxera_eye.fingerprinting import build_web_fingerprint
 
 
-_COUNTRIES = [
-    ("AR", -31.42, -64.19),
-    ("US", 37.77, -122.41),
-    ("DE", 52.52, 13.41),
-    ("JP", 35.68, 139.69),
-    ("GB", 51.50, -0.12),
-    ("BR", -23.55, -46.63),
-    ("IN", 19.07, 72.87),
-    ("ZA", -26.20, 28.04),
+_CITY_PROFILES = [
+    {"city": "Buenos Aires", "country": "AR", "latitude": -34.6037, "longitude": -58.3816},
+    {"city": "Cordoba", "country": "AR", "latitude": -31.4201, "longitude": -64.1888},
+    {"city": "Sao Paulo", "country": "BR", "latitude": -23.5505, "longitude": -46.6333},
+    {"city": "Rio de Janeiro", "country": "BR", "latitude": -22.9068, "longitude": -43.1729},
+    {"city": "Mexico City", "country": "MX", "latitude": 19.4326, "longitude": -99.1332},
+    {"city": "Bogota", "country": "CO", "latitude": 4.711, "longitude": -74.0721},
+    {"city": "Lima", "country": "PE", "latitude": -12.0464, "longitude": -77.0428},
+    {"city": "New York", "country": "US", "latitude": 40.7128, "longitude": -74.006},
+    {"city": "Los Angeles", "country": "US", "latitude": 34.0522, "longitude": -118.2437},
+    {"city": "Chicago", "country": "US", "latitude": 41.8781, "longitude": -87.6298},
+    {"city": "San Francisco", "country": "US", "latitude": 37.7749, "longitude": -122.4194},
+    {"city": "Toronto", "country": "CA", "latitude": 43.6532, "longitude": -79.3832},
+    {"city": "London", "country": "GB", "latitude": 51.5072, "longitude": -0.1276},
+    {"city": "Paris", "country": "FR", "latitude": 48.8566, "longitude": 2.3522},
+    {"city": "Madrid", "country": "ES", "latitude": 40.4168, "longitude": -3.7038},
+    {"city": "Berlin", "country": "DE", "latitude": 52.52, "longitude": 13.405},
+    {"city": "Amsterdam", "country": "NL", "latitude": 52.3676, "longitude": 4.9041},
+    {"city": "Rome", "country": "IT", "latitude": 41.9028, "longitude": 12.4964},
+    {"city": "Istanbul", "country": "TR", "latitude": 41.0082, "longitude": 28.9784},
+    {"city": "Moscow", "country": "RU", "latitude": 55.7558, "longitude": 37.6173},
+    {"city": "Cairo", "country": "EG", "latitude": 30.0444, "longitude": 31.2357},
+    {"city": "Lagos", "country": "NG", "latitude": 6.5244, "longitude": 3.3792},
+    {"city": "Johannesburg", "country": "ZA", "latitude": -26.2041, "longitude": 28.0473},
+    {"city": "Nairobi", "country": "KE", "latitude": -1.2864, "longitude": 36.8172},
+    {"city": "Dubai", "country": "AE", "latitude": 25.2048, "longitude": 55.2708},
+    {"city": "Riyadh", "country": "SA", "latitude": 24.7136, "longitude": 46.6753},
+    {"city": "Mumbai", "country": "IN", "latitude": 19.076, "longitude": 72.8777},
+    {"city": "Delhi", "country": "IN", "latitude": 28.6139, "longitude": 77.209},
+    {"city": "Bengaluru", "country": "IN", "latitude": 12.9716, "longitude": 77.5946},
+    {"city": "Singapore", "country": "SG", "latitude": 1.3521, "longitude": 103.8198},
+    {"city": "Bangkok", "country": "TH", "latitude": 13.7563, "longitude": 100.5018},
+    {"city": "Jakarta", "country": "ID", "latitude": -6.2088, "longitude": 106.8456},
+    {"city": "Hong Kong", "country": "HK", "latitude": 22.3193, "longitude": 114.1694},
+    {"city": "Shanghai", "country": "CN", "latitude": 31.2304, "longitude": 121.4737},
+    {"city": "Beijing", "country": "CN", "latitude": 39.9042, "longitude": 116.4074},
+    {"city": "Seoul", "country": "KR", "latitude": 37.5665, "longitude": 126.978},
+    {"city": "Tokyo", "country": "JP", "latitude": 35.6762, "longitude": 139.6503},
+    {"city": "Sydney", "country": "AU", "latitude": -33.8688, "longitude": 151.2093},
+    {"city": "Melbourne", "country": "AU", "latitude": -37.8136, "longitude": 144.9631},
 ]
 
 _SEVERITIES = ["critical", "high", "medium", "low"]
@@ -123,6 +154,10 @@ def _device_iot_metadata(device: dict) -> dict:
     return {}
 
 
+def _device_network_key(device: dict) -> str:
+    return str(device.get("ip") or device.get("device_id") or "")
+
+
 class OpsRuntimeStore:
     def __init__(self) -> None:
         self._lock = Lock()
@@ -185,18 +220,20 @@ class OpsRuntimeStore:
         profile: dict,
         web_fingerprint: dict,
     ) -> dict:
-        country, base_lat, base_lon = _COUNTRIES[slot % len(_COUNTRIES)]
+        city_profile = _CITY_PROFILES[slot % len(_CITY_PROFILES)]
         severity = _SEVERITIES[(slot + self._scan_runs + rnd.randint(0, 3)) % len(_SEVERITIES)]
-        lat = round(base_lat + (((slot % 7) - 3) * 0.19) + rnd.uniform(-0.08, 0.08), 4)
-        lon = round(base_lon + (((slot % 9) - 4) * 0.17) + rnd.uniform(-0.08, 0.08), 4)
+        lat = round(float(city_profile["latitude"]) + (((slot % 5) - 2) * 0.012) + rnd.uniform(-0.006, 0.006), 4)
+        lon = round(float(city_profile["longitude"]) + (((slot % 5) - 2) * 0.012) + rnd.uniform(-0.006, 0.006), 4)
         host_major = 16 + (slot // 200)
         host_minor = (slot % 200) + 10
-        device_id = f"dev-{slot:04d}"
+        ip = f"172.{host_major}.{slot % 250}.{host_minor}"
+        device_id = f"dev-{host_major:03d}-{slot % 250:03d}-{host_minor:03d}"
         return {
             "device_id": device_id,
-            "name": f"Edge-Asset-{slot:03d}",
-            "ip": f"172.{host_major}.{slot % 250}.{host_minor}",
-            "country": country,
+            "name": f"{city_profile['city']} Edge Asset {slot:03d}",
+            "ip": ip,
+            "country": str(city_profile["country"]),
+            "city": str(city_profile["city"]),
             "latitude": lat,
             "longitude": lon,
             "severity": severity,
@@ -226,11 +263,13 @@ class OpsRuntimeStore:
         }
 
     def _upsert_device(self, device: dict) -> None:
-        device_id = str(device["device_id"])
-        existing = self._devices_by_id.get(device_id)
+        canonical_id = _device_network_key(device)
+        device["device_id"] = canonical_id
+        existing = self._devices_by_id.get(canonical_id)
         if existing is None:
-            self._devices_by_id[device_id] = deepcopy(device)
-            self._device_order.append(device_id)
+            self._devices_by_id[canonical_id] = deepcopy(device)
+            if canonical_id not in self._device_order:
+                self._device_order.append(canonical_id)
             return
 
         existing.update(
@@ -238,6 +277,7 @@ class OpsRuntimeStore:
                 "name": device["name"],
                 "ip": device["ip"],
                 "country": device["country"],
+                "city": device["city"],
                 "latitude": device["latitude"],
                 "longitude": device["longitude"],
                 "severity": device["severity"],
@@ -251,7 +291,7 @@ class OpsRuntimeStore:
         )
 
     def _upsert_finding(self, *, device: dict, now: str) -> None:
-        device_id = str(device["device_id"])
+        device_id = _device_network_key(device)
         finding_id = self._device_finding_map.get(device_id, f"f-{device_id}")
         finding = self._findings_by_id.get(finding_id)
         description = f"Accumulated scan activity detected {device['severity']} exposure posture on asset {device_id}."
@@ -303,7 +343,15 @@ class OpsRuntimeStore:
             return self._snapshot_unlocked()
 
     def _snapshot_unlocked(self) -> dict:
-        devices = [deepcopy(self._devices_by_id[device_id]) for device_id in self._device_order]
+        devices: list[dict] = []
+        seen_network_keys: set[str] = set()
+        for device_id in self._device_order:
+            device = deepcopy(self._devices_by_id[device_id])
+            network_key = _device_network_key(device)
+            if network_key in seen_network_keys:
+                continue
+            seen_network_keys.add(network_key)
+            devices.append(device)
         findings = [deepcopy(self._findings_by_id[finding_id]) for finding_id in self._finding_order]
         severity_counts: dict[str, int] = {level: 0 for level in _SEVERITIES}
         status_counts: dict[str, int] = {status: 0 for status in _FINDING_STATUSES}
@@ -503,6 +551,8 @@ class OpsRuntimeStore:
             items: list[dict] = []
             for device_id in self._device_order:
                 device = self._devices_by_id[device_id]
+                if _device_network_key(device) != device_id:
+                    continue
                 metadata = _device_iot_metadata(device)
                 device_vendor = str(metadata.get("vendor", ""))
                 if severity and str(device.get("severity")) != severity:

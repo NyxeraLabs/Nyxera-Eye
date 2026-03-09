@@ -10,6 +10,8 @@ import { AppShell } from "./components/app-shell";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Nyxera Eye Command Center",
   description: "Next.js + Tailwind frontend for Nyxera Eye",

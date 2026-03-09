@@ -1,102 +1,56 @@
-# Full User Guide
+<!--
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+-->
 
-## 1. Overview
+# User Guide
 
-Nyxera Eye is an IoT/ICS attack surface intelligence platform for authorized security research and defensive operations.
+## Overview
 
-Main capabilities:
-- OSINT ingestion from Shodan/Censys/ZoomEye
-- Device normalization and enrichment
-- Fingerprinting (favicon/JA3/JARM)
-- Vulnerability intelligence and risk scoring
-- Operator interfaces (TUI + web/API)
-- Media and vision tagging
-- Change detection
-- Security hardening controls
-- Observability telemetry
+Nyxera Eye provides a live operator workflow for:
 
-## 2. Safety Model
+- discovering network assets
+- accumulating service metadata across scan runs
+- fingerprinting web-facing assets
+- exposing vendor and firmware hints
+- tracking findings and actions
+- investigating devices from the UI
 
-Nyxera Eye supports:
-- Passive mode (default): non-intrusive intelligence only
-- Authorized scope mode: constrained operations on approved scope
+## Main Screens
 
-Read and follow:
-- [Compliance Policy](../../COMPLIANCE.md)
-- [Ethics Policy](../../ETHICS.md)
-- [Security Disclosure](../../SECURITY_DISCLOSURE.md)
+- Dashboard: `/`
+- Device registry: `/devices`
+- Device investigation: `/devices/{deviceId}`
+- Findings registry: `/findings`
+- World map: `/map`
+- Events: `/events`
+- Settings: `/settings`
+- Audit: `/audit`
 
-## 3. System Workflow
+## Typical Session
 
-1. Collect OSINT data
-2. Push work to queue
-3. Process banners/services/risk profile
-4. Normalize records into canonical schema
-5. Enrich with fingerprints and vuln intel
-6. Expose data for operator investigation (TUI/API)
-7. Monitor changes and telemetry
+1. Authenticate.
+2. Run a single scan from the dashboard.
+3. Start the scan loop if you want inventory growth over time.
+4. Review severity, vendor, port, and geography charts.
+5. Search devices from `/devices`.
+6. Review and filter findings from `/findings`.
+7. Investigate into the device detail page.
+8. Export a finding if needed.
 
-## 4. Installation and Startup
+## Runtime Model
 
-Use:
-- [Installation Guide](../guides/INSTALLATION.md)
-- [Getting Started](../guides/GETTING_STARTED.md)
+- device inventory is cumulative
+- findings persist across scan runs
+- finding actions update status and history
+- map coordinates are centered around major world cities
 
-## 5. Core Operations
+## Related Documents
 
-### 5.1 Run deterministic full E2E validation
-
-```bash
-PYTHONPATH=src python scripts/e2e_full_validation.py
-```
-
-### 5.2 Run test suite
-
-```bash
-poetry run pytest -q
-```
-
-### 5.3 Validate infrastructure compose
-
-```bash
-docker compose config -q
-```
-
-## 6. API Usage
-
-Protected endpoints require `X-API-Token`.
-
-Examples:
-
-```bash
-curl -s http://127.0.0.1:8000/health
-curl -s -H "X-API-Token: <TOKEN>" "http://127.0.0.1:8000/search/opensearch?q=camera"
-curl -s -H "X-API-Token: <TOKEN>" "http://127.0.0.1:8000/observability/prometheus"
-```
-
-For details, see [API Manual](API_MANUAL.md).
-
-## 7. Operator Usage
-
-TUI shortcut views:
-- `S` scan
-- `P` pivot
-- `V` vulnerabilities
-- `M` map
-
-For full workflows, see [Operator Manual](OPERATOR_MANUAL.md).
-
-## 8. QA and Release Validation
-
-Use:
-- [E2E Validation Guide](../guides/E2E_VALIDATION.md)
-- [QA Runbook](../../RUNBOOK.md)
-- [E2E Audit Report](../../E2E_AUDIT.md)
-
-## 9. Security and Compliance Operations
-
-See [Security and Compliance Manual](SECURITY_COMPLIANCE_MANUAL.md).
-
-## 10. Troubleshooting
-
-See [Troubleshooting Manual](TROUBLESHOOTING.md).
+- [../guides/GETTING_STARTED.md](../guides/GETTING_STARTED.md)
+- [../guides/INSTALLATION.md](../guides/INSTALLATION.md)
+- [API_MANUAL.md](API_MANUAL.md)
+- [OPERATOR_MANUAL.md](OPERATOR_MANUAL.md)
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md)

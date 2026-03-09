@@ -1,59 +1,61 @@
+<!--
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+-->
+
 # Installation Guide
 
-## 1. Clone and Enter Repository
+## Repository
 
 ```bash
 git clone <your-repo-url> Nyxera-Eye
 cd Nyxera-Eye
 ```
 
-## 2. Python Environment
-
-### Option A: Poetry
-
-```bash
-poetry install --no-interaction
-```
-
-### Option B: venv + pip
+## Python Runtime
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-pip install pytest fastapi httpx arq
+pip install pytest fastapi httpx arq uvicorn
 ```
 
-## 3. Infrastructure Validation
+## Frontend Runtime
 
 ```bash
+cd frontend
+npm ci
+cd ..
+```
+
+## Validation Commands
+
+```bash
+./.venv/bin/python scripts/lint_repo.py
+./.venv/bin/pytest tests/test_ops_runtime.py -q
 docker compose config -q
+cd frontend && npm run typecheck
 ```
 
-## 4. Local Validation
-
-```bash
-make compile
-make infra-check
-make e2e
-```
-
-Equivalent raw commands:
-
-```bash
-python -m compileall -q src tests scripts
-PYTHONPATH=src python scripts/e2e_full_validation.py
-```
-
-## 5. Optional API Bootstrap Token
+## Optional Local API Bootstrap
 
 ```bash
 export NYXERA_API_BOOTSTRAP_TOKEN=nyxera-dev-token
 export NYXERA_API_BOOTSTRAP_ROLE=admin
 ```
 
-Then start API (example):
+## Start API
 
 ```bash
-PYTHONPATH=src uvicorn nyxera_eye.api.app:app --host 127.0.0.1 --port 8000
+PYTHONPATH=src .venv/bin/uvicorn nyxera_eye.api.app:app --host 127.0.0.1 --port 18080
+```
+
+## Start Frontend
+
+```bash
+cd frontend
+NEXT_PUBLIC_NYXERA_API_BASE=http://127.0.0.1:18080 npm run dev
 ```

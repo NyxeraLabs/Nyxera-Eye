@@ -1,63 +1,45 @@
+<!--
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+-->
+
 # Operator Manual
 
-## 1. Mission
+## Mission
 
-Use Nyxera Eye to identify exposed infrastructure and prioritize risk for authorized defensive action.
+Use Nyxera Eye to discover, enrich, review, and investigate exposed assets within authorized scope.
 
-## 2. Operating Modes
+## Standard Workflow
 
-- Passive mode: default, non-intrusive intelligence collection.
-- Authorized scope mode: constrained by approved CIDR/domain scope.
+1. Open the dashboard and run a single scan to seed the inventory.
+2. Start the scan loop to accumulate additional assets over time.
+3. Review severity, status, vendor, port, and country charts.
+4. Open `/devices` and filter by vendor, country, severity, or free text.
+5. Open `/findings` and filter by severity or status.
+6. Investigate a finding into `/devices/{deviceId}`.
+7. Review audit events after notable actions.
 
-## 3. Standard Workflow
+## Device Investigation Expectations
 
-1. Define mission scope and constraints.
-2. Collect and normalize OSINT records.
-3. Review service fingerprints and clusters.
-4. Correlate vulnerability and exploit status.
-5. Visualize map/distribution/telemetry.
-6. Generate findings and remediation actions.
+Each device detail should show:
 
-## 4. TUI Operations
+- stable device identity
+- IP, city, and country
+- severity and scan count
+- services and banners
+- web fingerprint fields
+- vendor, model, and firmware hints
+- linked finding
+- recent events
 
-Core keymap:
-- `S` -> scan view
-- `P` -> pivot view
-- `V` -> vulnerabilities view
-- `M` -> map view
+## Safety Requirements
 
-Search-as-you-type filters live records by text match.
+Never use the platform for:
 
-Mongo query input supports:
-- `field:value`
-- full text (`$text`)
-
-## 5. Investigation Checklist
-
-- Confirm target is not blacklisted.
-- Confirm target has not opted out.
-- Confirm runtime mode allows requested action.
-- Confirm audit logging is active.
-- Record confidence and source for each finding.
-
-## 6. Outputs and Evidence
-
-Required per investigation:
-- target identity (`device_id`, IP, country, org)
-- service list and exposure profile
-- vulnerability evidence (`CVE`, severity, exploit flags)
-- time-bounded logs and actions
-
-## 7. Escalation Rules
-
-Escalate to security leadership when:
-- exposure includes critical infrastructure indicators
-- confirmed exploitable high/critical CVEs
-- repeated high-risk reappearance events
-
-## 8. Safety Requirements
-
-Never perform:
 - brute force
 - exploitation
-- intrusive probing outside authorized scope
+- intrusive probing outside approved scope
+
+Passive mode is the default. Authorized scope mode must be explicitly configured and logged.

@@ -50,7 +50,7 @@ export default function DeviceDetailPage() {
             <p className="font-mono text-xs uppercase tracking-[0.16em] text-cyan-300">Investigation</p>
             <h1 className="mt-2 text-3xl font-bold text-emerald-100">{device.name}</h1>
             <p className="mt-2 text-sm text-slate-300">
-              {device.ip} · {device.country} · {device.iotMetadata?.vendor || "Unknown vendor"} · {device.iotMetadata?.model || "Unknown model"}
+              {device.ip} · {device.city || "-"}, {device.country} · {device.iotMetadata?.vendor || "Unknown vendor"} · {device.iotMetadata?.model || "Unknown model"}
             </p>
           </div>
           <div className="flex gap-2">
