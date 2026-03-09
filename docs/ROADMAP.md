@@ -127,15 +127,15 @@ Purpose: ensure platform operates within acceptable legal and ethical boundaries
 Tasks:
 
 ```
-[ ] commit: Create COMPLIANCE.md defining allowed use cases
-[ ] commit: Create ETHICS.md research ethics policy
-[ ] commit: Create SECURITY_DISCLOSURE.md for responsible disclosure
-[ ] commit: Implement Passive Mode (default runtime mode)
-[ ] commit: Implement Authorized Scope Mode with CIDR allowlist
-[ ] commit: Implement Target Blacklist system
-[ ] commit: Implement Opt-Out registry for asset owners
-[ ] commit: Add audit logging subsystem
-[ ] commit: Add legal banner to UI
+[x] commit: Create COMPLIANCE.md defining allowed use cases
+[x] commit: Create ETHICS.md research ethics policy
+[x] commit: Create SECURITY_DISCLOSURE.md for responsible disclosure
+[x] commit: Implement Passive Mode (default runtime mode)
+[x] commit: Implement Authorized Scope Mode with CIDR allowlist
+[x] commit: Implement Target Blacklist system
+[x] commit: Implement Opt-Out registry for asset owners
+[x] commit: Add audit logging subsystem
+[x] commit: Add legal banner to UI
 ```
 
 Policy requirements:
