@@ -9,12 +9,21 @@ async function proxy(request: NextRequest, path: string[]): Promise<NextResponse
     target.searchParams.set(key, value);
   });
 
+  const outgoingHeaders = new Headers();
+  const incomingType = request.headers.get("content-type");
+  if (incomingType) {
+    outgoingHeaders.set("Content-Type", incomingType);
+  }
+  const incomingToken = request.headers.get("x-api-token");
+  if (incomingToken) {
+    outgoingHeaders.set("X-API-Token", incomingToken);
+  } else if (process.env.NEXT_PUBLIC_NYXERA_API_TOKEN) {
+    outgoingHeaders.set("X-API-Token", process.env.NEXT_PUBLIC_NYXERA_API_TOKEN);
+  }
+
   const response = await fetch(target, {
     method: request.method,
-    headers: {
-      "Content-Type": request.headers.get("content-type") || "application/json",
-      "X-API-Token": process.env.NEXT_PUBLIC_NYXERA_API_TOKEN || "",
-    },
+    headers: outgoingHeaders,
     body: request.method === "GET" || request.method === "HEAD" ? undefined : await request.text(),
     cache: "no-store",
   });

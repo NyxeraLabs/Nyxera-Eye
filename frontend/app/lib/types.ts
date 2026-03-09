@@ -59,3 +59,17 @@ export type OpsFeed = {
   metrics: OpsMetrics;
   source: string;
 };
+
+export type AuthUser = {
+  username: string;
+  role: string;
+  token: string;
+};
+
+export type FrontendSettings = {
+  runtimeMode: string;
+  scanDefaultBatchSize: number;
+  scanDefaultIntervalSeconds: number;
+  autoStartScanLoop: boolean;
+  authorizedScopeReference: string;
+};

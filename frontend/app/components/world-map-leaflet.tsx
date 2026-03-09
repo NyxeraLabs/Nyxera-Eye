@@ -1,6 +1,7 @@
 "use client";
 
 import { CircleMarker, MapContainer, Popup, TileLayer } from "react-leaflet";
+import type { ComponentType } from "react";
 import type { DeviceLocation, EventLocation } from "../lib/types";
 
 const severityColor: Record<string, string> = {
@@ -18,17 +19,21 @@ type Props = {
 };
 
 export default function WorldMapLeaflet({ devices, events, showDevices = true, showEvents = true }: Props) {
+  const LeafletMapContainer = MapContainer as unknown as ComponentType<Record<string, unknown>>;
+  const LeafletTileLayer = TileLayer as unknown as ComponentType<Record<string, unknown>>;
+  const LeafletCircleMarker = CircleMarker as unknown as ComponentType<Record<string, unknown>>;
+
   return (
     <div className="overflow-hidden rounded-2xl border border-emerald-300/15 shadow-[0_0_0_1px_rgba(16,185,129,0.2),0_24px_70px_rgba(2,6,23,0.7)]">
-      <MapContainer center={[18, 5]} zoom={2} minZoom={2} style={{ height: "460px", width: "100%" }} scrollWheelZoom>
-        <TileLayer
+      <LeafletMapContainer center={[18, 5]} zoom={2} minZoom={2} style={{ height: "460px", width: "100%" }} scrollWheelZoom>
+        <LeafletTileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
 
         {showDevices &&
           devices.map((device) => (
-            <CircleMarker
+            <LeafletCircleMarker
               key={device.id}
               center={[device.lat, device.lon]}
               radius={7}
@@ -47,12 +52,12 @@ export default function WorldMapLeaflet({ devices, events, showDevices = true, s
                   <p><strong>Severity:</strong> {device.severity.toUpperCase()}</p>
                 </div>
               </Popup>
-            </CircleMarker>
+            </LeafletCircleMarker>
           ))}
 
         {showEvents &&
           events.map((event) => (
-            <CircleMarker
+            <LeafletCircleMarker
               key={event.id}
               center={[event.lat, event.lon]}
               radius={5}
@@ -73,9 +78,9 @@ export default function WorldMapLeaflet({ devices, events, showDevices = true, s
                   <p><strong>Time:</strong> {event.timestamp}</p>
                 </div>
               </Popup>
-            </CircleMarker>
+            </LeafletCircleMarker>
           ))}
-      </MapContainer>
+      </LeafletMapContainer>
     </div>
   );
 }

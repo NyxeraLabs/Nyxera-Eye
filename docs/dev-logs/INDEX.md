@@ -25,6 +25,7 @@ This section contains detailed implementation logs for each roadmap sprint, incl
 - [Sprint 18 - Frontend UX Foundation](sprints/SPRINT-18.md)
 - [Sprint 19 - Geospatial Intelligence UX](sprints/SPRINT-19.md)
 - [Sprint 20 - Interactive Leaflet Map Runtime](sprints/SPRINT-20.md)
+- [Sprint 21 - Security, Identity, and Auditability](sprints/SPRINT-21.md)
 
 ## Supporting References
 

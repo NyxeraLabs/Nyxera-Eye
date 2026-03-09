@@ -1,10 +1,36 @@
-import type { DeviceLocation, EventLocation, Finding, OpsFeed } from "./types";
+import type { AuthUser, DeviceLocation, EventLocation, Finding, FrontendSettings, OpsFeed } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_NYXERA_API_BASE || "/api/nyxera";
-const API_TOKEN = process.env.NEXT_PUBLIC_NYXERA_API_TOKEN || "";
+const ENV_API_TOKEN = process.env.NEXT_PUBLIC_NYXERA_API_TOKEN || "";
 
-function buildHeaders(): HeadersInit {
-  return API_TOKEN ? { "X-API-Token": API_TOKEN } : {};
+function getStoredToken(): string {
+  if (typeof window === "undefined") {
+    return ENV_API_TOKEN;
+  }
+  return window.localStorage.getItem("nyxera_api_token") || ENV_API_TOKEN;
+}
+
+export function setStoredToken(token: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  if (token) {
+    window.localStorage.setItem("nyxera_api_token", token);
+    return;
+  }
+  window.localStorage.removeItem("nyxera_api_token");
+}
+
+function buildHeaders(jsonBody: boolean = false): HeadersInit {
+  const token = getStoredToken();
+  const headers: HeadersInit = {};
+  if (token) {
+    headers["X-API-Token"] = token;
+  }
+  if (jsonBody) {
+    headers["Content-Type"] = "application/json";
+  }
+  return headers;
 }
 
 function normalizeSeverity(value: unknown): "critical" | "high" | "medium" | "low" {
@@ -70,10 +96,96 @@ function normalizeFindings(input: unknown): Finding[] {
       severity: normalizeSeverity(record.severity),
       deviceId: String(record.device_id || record.deviceId || "unknown"),
       status: String(record.status || "open"),
-      actions: Array.isArray(record.actions) ? (record.actions as Array<Record<string, unknown>>) : [],
+      actions: Array.isArray(record.actions)
+        ? (record.actions as Array<Record<string, unknown>>).map((actionItem) => ({
+            action: String(actionItem.action || "unknown"),
+            at: String(actionItem.at || new Date().toISOString()),
+          }))
+        : [],
       updatedAt: String(record.updated_at || new Date().toISOString()),
     };
   });
+}
+
+export async function registerUser(username: string, password: string, role: string = "analyst"): Promise<AuthUser | null> {
+  try {
+    const response = await fetch(`${API_BASE}/auth/register`, {
+      method: "POST",
+      headers: buildHeaders(true),
+      body: JSON.stringify({ username, password, role }),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = (await response.json()) as Record<string, unknown>;
+    const token = String(payload.token || "");
+    if (!token) {
+      return null;
+    }
+    setStoredToken(token);
+    return { username: String(payload.username || username), role: String(payload.role || role), token };
+  } catch {
+    return null;
+  }
+}
+
+export async function loginUser(username: string, password: string): Promise<AuthUser | null> {
+  try {
+    const response = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: buildHeaders(true),
+      body: JSON.stringify({ username, password }),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = (await response.json()) as Record<string, unknown>;
+    const token = String(payload.token || "");
+    if (!token) {
+      return null;
+    }
+    setStoredToken(token);
+    return { username: String(payload.username || username), role: String(payload.role || "analyst"), token };
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchCurrentUser(): Promise<AuthUser | null> {
+  const token = getStoredToken();
+  if (!token) {
+    return null;
+  }
+  try {
+    const response = await fetch(`${API_BASE}/auth/me`, {
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = (await response.json()) as Record<string, unknown>;
+    return { username: String(payload.username || "unknown"), role: String(payload.role || "analyst"), token };
+  } catch {
+    return null;
+  }
+}
+
+export async function logoutUser(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE}/auth/logout`, {
+      method: "POST",
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    setStoredToken("");
+    return response.ok;
+  } catch {
+    setStoredToken("");
+    return false;
+  }
 }
 
 export async function fetchOpsFeed(): Promise<OpsFeed | null> {
@@ -82,14 +194,12 @@ export async function fetchOpsFeed(): Promise<OpsFeed | null> {
       headers: buildHeaders(),
       cache: "no-store",
     });
-
     if (!response.ok) {
       return null;
     }
 
     const payload = (await response.json()) as Record<string, unknown>;
     const metrics = (payload.metrics as Record<string, unknown> | undefined) || {};
-
     return {
       generatedAt: String(payload.generated_at || new Date().toISOString()),
       devices: normalizeDevices(payload.devices),
@@ -117,6 +227,76 @@ export async function fetchOpsFeed(): Promise<OpsFeed | null> {
   }
 }
 
+export async function fetchSettings(): Promise<FrontendSettings | null> {
+  try {
+    const response = await fetch(`${API_BASE}/frontend/settings`, {
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = (await response.json()) as Record<string, unknown>;
+    const settings = (payload.settings as Record<string, unknown>) || {};
+    return {
+      runtimeMode: String(settings.runtime_mode || "passive"),
+      scanDefaultBatchSize: Number(settings.scan_default_batch_size || 96),
+      scanDefaultIntervalSeconds: Number(settings.scan_default_interval_seconds || 10),
+      autoStartScanLoop: Boolean(settings.auto_start_scan_loop || false),
+      authorizedScopeReference: String(settings.authorized_scope_reference || ""),
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function updateSettings(settings: FrontendSettings): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE}/frontend/settings`, {
+      method: "PUT",
+      headers: buildHeaders(true),
+      body: JSON.stringify({
+        runtime_mode: settings.runtimeMode,
+        scan_default_batch_size: settings.scanDefaultBatchSize,
+        scan_default_interval_seconds: settings.scanDefaultIntervalSeconds,
+        auto_start_scan_loop: settings.autoStartScanLoop,
+        authorized_scope_reference: settings.authorizedScopeReference,
+      }),
+      cache: "no-store",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function fetchAuditEvents(limit: number = 200): Promise<AuditEvent[]> {
+  try {
+    const response = await fetch(`${API_BASE}/audit/events?limit=${Math.max(1, Math.min(limit, 2000))}`, {
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return [];
+    }
+    const payload = (await response.json()) as Record<string, unknown>;
+    const events = (payload.events as Array<Record<string, unknown>>) || [];
+    return events.map((event) => ({
+      id: String(event.id || ""),
+      timestamp: String(event.timestamp || ""),
+      actor: String(event.actor || "unknown"),
+      action: String(event.action || "unknown"),
+      status: String(event.status || "unknown"),
+      method: String(event.method || ""),
+      path: String(event.path || ""),
+      ip: String(event.ip || ""),
+      details: (event.details as Record<string, unknown>) || {},
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function triggerScan(batchSize: number = 96): Promise<boolean> {
   try {
     const response = await fetch(`${API_BASE}/frontend/scan?batch_size=${batchSize}`, {
@@ -132,14 +312,11 @@ export async function triggerScan(batchSize: number = 96): Promise<boolean> {
 
 export async function startScanLoop(batchSize: number = 96, intervalSeconds: number = 10): Promise<boolean> {
   try {
-    const response = await fetch(
-      `${API_BASE}/frontend/scan/start?batch_size=${batchSize}&interval_seconds=${intervalSeconds}`,
-      {
-        method: "POST",
-        headers: buildHeaders(),
-        cache: "no-store",
-      }
-    );
+    const response = await fetch(`${API_BASE}/frontend/scan/start?batch_size=${batchSize}&interval_seconds=${intervalSeconds}`, {
+      method: "POST",
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
     return response.ok;
   } catch {
     return false;
@@ -186,3 +363,15 @@ export async function exportFinding(findingId: string): Promise<Record<string, u
     return null;
   }
 }
+
+export type AuditEvent = {
+  id: string;
+  timestamp: string;
+  actor: string;
+  action: string;
+  status: string;
+  method: string;
+  path: string;
+  ip: string;
+  details: Record<string, unknown>;
+};

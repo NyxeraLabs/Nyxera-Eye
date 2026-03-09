@@ -57,6 +57,9 @@ export const findings: Finding[] = [
     description: "Device exposes vulnerable firmware with confirmed exploit availability.",
     severity: "critical",
     deviceId: "dev-2",
+    status: "open",
+    actions: [],
+    updatedAt: "2026-03-09T13:12:00Z",
   },
   {
     id: "f-2",
@@ -64,6 +67,9 @@ export const findings: Finding[] = [
     description: "Modbus service reachable with high exposure profile.",
     severity: "high",
     deviceId: "dev-3",
+    status: "open",
+    actions: [],
+    updatedAt: "2026-03-09T13:12:00Z",
   },
   {
     id: "f-3",
@@ -71,6 +77,9 @@ export const findings: Finding[] = [
     description: "Previously disappeared device has reappeared in monitored segment.",
     severity: "medium",
     deviceId: "dev-1",
+    status: "open",
+    actions: [],
+    updatedAt: "2026-03-09T13:12:00Z",
   },
   {
     id: "f-4",
@@ -78,5 +87,8 @@ export const findings: Finding[] = [
     description: "New industrial panel tag collected from latest snapshot processing.",
     severity: "low",
     deviceId: "dev-4",
+    status: "open",
+    actions: [],
+    updatedAt: "2026-03-09T13:12:00Z",
   },
 ];

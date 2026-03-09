@@ -108,6 +108,12 @@ Main HTTPS endpoints:
 - Frontend: `https://127.0.0.1:8449`
 - API Swagger: `https://127.0.0.1:8448/api/docs`
 - API OpenAPI: `https://127.0.0.1:8448/api/openapi.json`
+- Audit events API (admin): `https://127.0.0.1:8448/audit/events`
+
+Default local admin credentials:
+
+- Username: `admin`
+- Password: `admin-change-me`
 
 ## Disclaimer
 

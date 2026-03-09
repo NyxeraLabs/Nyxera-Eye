@@ -9,7 +9,7 @@ PYTHON ?= python3
 VENV_PY := $(VENV_DIR)/bin/python
 VENV_PIP := $(VENV_PY) -m pip
 
-.PHONY: help install install-poetry install-venv ensure-venv test compile infra-check e2e qa up down run-api frontend-install frontend-dev frontend-build nginx-certs deploy docs run-all stop-all status-all
+.PHONY: help install install-poetry install-venv ensure-venv test compile infra-check e2e qa up down run-api frontend-install frontend-dev frontend-build nginx-certs deploy docs run-all stop-all status-all audit-tail
 
 help:
 	@echo "Nyxera Eye Make Targets"
@@ -32,6 +32,7 @@ help:
 	@echo "  make run-all         # Alias of deploy"
 	@echo "  make stop-all        # Stop full dockerized stack"
 	@echo "  make status-all      # Show running container status"
+	@echo "  make audit-tail      # Tail backend audit ledger events"
 	@echo "  make docs            # Print docs entry points"
 
 install:
@@ -96,7 +97,7 @@ down:
 	docker compose down
 
 run-api: ensure-venv
-	PYTHONPATH=src $(VENV_PY) -m uvicorn nyxera_eye.api.app:app --host $(API_HOST) --port $(API_PORT)
+	NYXERA_AUTH_ADMIN_USER=$${NYXERA_AUTH_ADMIN_USER:-admin} NYXERA_AUTH_ADMIN_PASSWORD=$${NYXERA_AUTH_ADMIN_PASSWORD:-admin-change-me} PYTHONPATH=src $(VENV_PY) -m uvicorn nyxera_eye.api.app:app --host $(API_HOST) --port $(API_PORT)
 
 frontend-install:
 	cd frontend && npm install
@@ -137,8 +138,14 @@ stop-all:
 status-all:
 	docker compose ps
 
+audit-tail:
+	@mkdir -p .run
+	@touch .run/audit-events.jsonl
+	tail -f .run/audit-events.jsonl
+
 docs:
 	@echo "Manuals index: docs/manuals/INDEX.md"
 	@echo "Runbook: docs/RUNBOOK.md"
 	@echo "Dev logs index: docs/dev-logs/INDEX.md"
+	@echo "Audit log (runtime): .run/audit-events.jsonl"
 	@echo "Roadmap: docs/ROADMAP.md"

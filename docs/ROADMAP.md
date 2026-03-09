@@ -905,3 +905,16 @@ Critical safeguards already included in roadmap:
 * rate limiting
 
 ---
+
+# Sprint 21 (Completed) - Identity + Auditability + Frontend Control Plane
+
+Tasks completed:
+
+```
+[x] register/login backend endpoints with role assignment
+[x] frontend login/register pages with token-backed session handling
+[x] frontend settings page for runtime mode and scan defaults
+[x] request-level API audit middleware (actor/action/status/path/ip/timestamp)
+[x] append-only audit ledger persistence and admin audit query API
+[x] frontend audit dashboard page for traceability review
+```

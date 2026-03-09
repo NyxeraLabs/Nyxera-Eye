@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { fetchSettings } from "./lib/api";
 import { useOpsFeed } from "./lib/use-ops-feed";
 
 export default function DashboardPage() {
@@ -9,6 +10,16 @@ export default function DashboardPage() {
   const [scanStatus, setScanStatus] = useState<string>("");
   const [loopInterval, setLoopInterval] = useState<number>(10);
   const [loopBatch, setLoopBatch] = useState<number>(96);
+
+  useEffect(() => {
+    fetchSettings().then((settings) => {
+      if (!settings) {
+        return;
+      }
+      setLoopBatch(settings.scanDefaultBatchSize);
+      setLoopInterval(settings.scanDefaultIntervalSeconds);
+    });
+  }, []);
 
   const severityBars = useMemo(() => {
     if (!feed) {
