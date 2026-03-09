@@ -1023,11 +1023,11 @@ Extract device model and firmware hints from discovered services.
 ### Tasks
 
 * [x] Create `fingerprint` module
-* [ ] Parse HTTP server headers
-* [ ] Parse HTML page titles and metadata
-* [ ] Implement favicon hashing
-* [ ] Detect device model hints
-* [ ] Detect firmware version hints
+* [x] Parse HTTP server headers
+* [x] Parse HTML page titles and metadata
+* [x] Implement favicon hashing
+* [x] Detect device model hints
+* [x] Detect firmware version hints
 * [ ] Store fingerprint data in database
 * [ ] Add fingerprint information to asset API
 * [ ] Display fingerprint data in UI
