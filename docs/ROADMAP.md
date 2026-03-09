@@ -983,12 +983,12 @@ Before Sprint 22 task commits are considered complete, the repository must estab
 
 Required prerequisite tasks:
 
-* [ ] Create `cmd/`, `internal/`, `web/`, `configs/`, and `deployments/` top-level structure
-* [ ] Define migration mapping from legacy `src/` modules to `internal/*` targets
-* [ ] Define migration mapping from legacy `frontend/` routes to `web/*` targets
-* [ ] Define migration mapping from legacy `config/` and `infra/` assets to `configs/` and `deployments/`
-* [ ] Add temporary compatibility policy for legacy imports and paths during transition
-* [ ] Update CI validation to reject new Sprint 22+ code outside architecture-compliant targets
+* [x] Create `cmd/`, `internal/`, `web/`, `configs/`, and `deployments/` top-level structure
+* [x] Define migration mapping from legacy `src/` modules to `internal/*` targets
+* [x] Define migration mapping from legacy `frontend/` routes to `web/*` targets
+* [x] Define migration mapping from legacy `config/` and `infra/` assets to `configs/` and `deployments/`
+* [x] Add temporary compatibility policy for legacy imports and paths during transition
+* [x] Update CI validation to reject new Sprint 22+ code outside architecture-compliant targets
 
 Prerequisite commit plan:
 
@@ -1022,7 +1022,7 @@ Extract device model and firmware hints from discovered services.
 
 ### Tasks
 
-* [ ] Create `fingerprint` module
+* [x] Create `fingerprint` module
 * [ ] Parse HTTP server headers
 * [ ] Parse HTML page titles and metadata
 * [ ] Implement favicon hashing
