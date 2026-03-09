@@ -30,6 +30,7 @@ class AuditLogger:
             "target": target,
             "mode": mode,
         }
-        Path(self.log_path).parent.mkdir(parents=True, exist_ok=True)
-        with Path(self.log_path).open("a", encoding="utf-8") as handle:
+        path = Path(self.log_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(event, sort_keys=True) + "\n")

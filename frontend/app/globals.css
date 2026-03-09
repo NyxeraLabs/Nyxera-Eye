@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  background: #02050b;
+  color: #d6e2f0;
+}
+
+.bg-nyx-gradient {
+  background:
+    radial-gradient(circle at 14% 8%, rgba(16, 185, 129, 0.19), transparent 36%),
+    radial-gradient(circle at 84% 70%, rgba(34, 211, 238, 0.14), transparent 34%),
+    linear-gradient(160deg, #02050b 0%, #06101a 42%, #08151f 100%);
+}
+
+.leaflet-container {
+  background: #02050b;
+}
+
+.leaflet-control-zoom a {
+  background: #081821 !important;
+  color: #d7fff0 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #081821 !important;
+  color: #d7fff0 !important;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+}

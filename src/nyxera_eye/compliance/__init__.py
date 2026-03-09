@@ -13,14 +13,14 @@
 # ✘ Sell derived competing products
 
 from nyxera_eye.compliance.opt_out_registry import OptOutRegistry
+from nyxera_eye.compliance.runtime_mode import RuntimeMode, RuntimePolicy
 from nyxera_eye.compliance.scope import ScopePolicy
 from nyxera_eye.compliance.target_blacklist import TargetBlacklist
-from nyxera_eye.compliance.runtime_mode import RuntimeMode, RuntimePolicy
 
 __all__ = [
     "OptOutRegistry",
-    "ScopePolicy",
-    "TargetBlacklist",
     "RuntimeMode",
     "RuntimePolicy",
+    "ScopePolicy",
+    "TargetBlacklist",
 ]
