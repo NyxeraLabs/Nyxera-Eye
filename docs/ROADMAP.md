@@ -1170,11 +1170,11 @@ Ensure results accumulate instead of resetting after each scan cycle.
 
 ### Tasks
 
-* [ ] Replace in-memory results with database upsert logic
-* [ ] Implement asset update logic
-* [ ] Track scan history
-* [ ] Detect configuration changes
-* [ ] Add "last updated" timestamp
+* [x] Replace in-memory results with database upsert logic
+* [x] Implement asset update logic
+* [x] Track scan history
+* [x] Detect configuration changes
+* [x] Add "last updated" timestamp
 
 ### Commit Plan
 
