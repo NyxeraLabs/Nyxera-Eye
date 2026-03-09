@@ -45,5 +45,8 @@ jobs:
       - name: Run tests
         run: poetry run pytest -q
 
+      - name: Enforce architecture-compliant paths
+        run: sh scripts/check_architecture_paths.sh
+
       - name: Validate docker compose
         run: docker compose config -q
