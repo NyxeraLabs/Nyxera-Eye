@@ -458,8 +458,8 @@ FastAPI
 Features:
 
 ```
-[ ] commit: OpenSearch query endpoints
-[ ] commit: advanced filtering
+[x] commit: OpenSearch query endpoints
+[x] commit: advanced filtering
 ```
 
 Filter parameters:
