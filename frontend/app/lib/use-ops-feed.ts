@@ -2,22 +2,40 @@
 
 import { useEffect, useState } from "react";
 
-import { fetchOpsFeed } from "./api";
+import { fetchOpsFeed, performFindingAction, startScanLoop, stopScanLoop, triggerScan } from "./api";
 import type { OpsFeed } from "./types";
 
-export function useOpsFeed(pollMs: number = 15000) {
+export function useOpsFeed(pollMs: number = 5000) {
   const [feed, setFeed] = useState<OpsFeed | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = async () => {
+    const next = await fetchOpsFeed();
+    if (next) {
+      setFeed(next);
+      setError(null);
+    } else {
+      setError("Unable to reach backend ops feed. Start API service and ensure token/base URL are configured.");
+    }
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     let mounted = true;
 
     const pull = async () => {
       const next = await fetchOpsFeed();
-      if (mounted) {
-        setFeed(next);
-        setIsLoading(false);
+      if (!mounted) {
+        return;
       }
+      if (next) {
+        setFeed(next);
+        setError(null);
+      } else {
+        setError("Unable to reach backend ops feed. Start API service and ensure token/base URL are configured.");
+      }
+      setIsLoading(false);
     };
 
     pull();
@@ -29,5 +47,29 @@ export function useOpsFeed(pollMs: number = 15000) {
     };
   }, [pollMs]);
 
-  return { feed, isLoading };
+  const runScan = async (batchSize: number = 96) => {
+    const ok = await triggerScan(batchSize);
+    await refresh();
+    return ok;
+  };
+
+  const scanLoopStart = async (batchSize: number = 96, intervalSeconds: number = 10) => {
+    const ok = await startScanLoop(batchSize, intervalSeconds);
+    await refresh();
+    return ok;
+  };
+
+  const scanLoopStop = async () => {
+    const ok = await stopScanLoop();
+    await refresh();
+    return ok;
+  };
+
+  const findingAction = async (findingId: string, action: string) => {
+    const ok = await performFindingAction(findingId, action);
+    await refresh();
+    return ok;
+  };
+
+  return { feed, isLoading, error, refresh, runScan, scanLoopStart, scanLoopStop, findingAction };
 }

@@ -22,9 +22,9 @@ except ImportError:  # pragma: no cover
 
 from nyxera_eye.api.models import SearchFilters
 from nyxera_eye.api.opensearch import OpenSearchQueryService
+from nyxera_eye.api.ops_runtime import ops_runtime_store
 from nyxera_eye.api.target_cards import build_target_card
 from nyxera_eye.api.command_center import (
-    build_ops_feed,
     build_global_exposure_map_points,
     build_mining_telemetry,
     build_vulnerability_distribution,
@@ -148,5 +148,37 @@ if FastAPI is not None:
         return export_prometheus(metrics)
 
     @app.get("/frontend/ops-feed")
-    async def frontend_ops_feed(_: TokenRecord = Depends(_require_analyst)) -> dict:
-        return build_ops_feed()
+    async def frontend_ops_feed() -> dict:
+        return ops_runtime_store.snapshot()
+
+    @app.post("/frontend/scan")
+    async def frontend_scan(batch_size: int = 64) -> dict:
+        return ops_runtime_store.run_scan(batch_size=batch_size)
+
+    @app.post("/frontend/scan/start")
+    async def frontend_scan_start(batch_size: int = 96, interval_seconds: int = 10) -> dict:
+        started = ops_runtime_store.start_scan_loop(batch_size=batch_size, interval_seconds=interval_seconds)
+        return {"ok": started, "status": ops_runtime_store.scan_loop_status()}
+
+    @app.post("/frontend/scan/stop")
+    async def frontend_scan_stop() -> dict:
+        stopped = ops_runtime_store.stop_scan_loop()
+        return {"ok": stopped, "status": ops_runtime_store.scan_loop_status()}
+
+    @app.get("/frontend/scan/status")
+    async def frontend_scan_status() -> dict:
+        return {"status": ops_runtime_store.scan_loop_status()}
+
+    @app.post("/frontend/findings/{finding_id}/action")
+    async def frontend_finding_action(finding_id: str, action: str) -> dict:
+        updated = ops_runtime_store.finding_action(finding_id=finding_id, action=action)
+        if updated is None:
+            raise HTTPException(status_code=404, detail="finding not found")
+        return {"ok": True, "finding": updated}
+
+    @app.get("/frontend/findings/{finding_id}/export")
+    async def frontend_finding_export(finding_id: str) -> dict:
+        finding = ops_runtime_store.get_finding(finding_id=finding_id)
+        if finding is None:
+            raise HTTPException(status_code=404, detail="finding not found")
+        return {"finding": finding}

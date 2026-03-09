@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { exportFinding } from "../lib/api";
 import { useFinding } from "../components/finding-context";
 import type { Finding } from "../lib/types";
 import { useOpsFeed } from "../lib/use-ops-feed";
@@ -15,14 +16,37 @@ const severityClass: Record<string, string> = {
 
 export default function FindingsPage() {
   const { selected, setSelected } = useFinding();
-  const { feed, isLoading } = useOpsFeed();
+  const { feed, isLoading, findingAction } = useOpsFeed();
   const [opened, setOpened] = useState<Finding | null>(null);
+  const [status, setStatus] = useState<string>("");
+
+  const act = async (finding: Finding, action: string) => {
+    const ok = await findingAction(finding.id, action);
+    setStatus(ok ? `Action '${action}' applied.` : `Action '${action}' failed.`);
+  };
+
+  const doExport = async (finding: Finding) => {
+    const payload = await exportFinding(finding.id);
+    if (!payload) {
+      setStatus("Export failed.");
+      return;
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${finding.id}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus("Exported finding JSON.");
+  };
 
   return (
     <div className="grid gap-4 pb-20 lg:grid-cols-[1.3fr_0.9fr]">
       <section className="rounded-2xl border border-white/10 bg-black/35 p-5">
         <h1 className="text-2xl font-bold text-emerald-100">Findings Registry</h1>
         <p className="text-sm text-slate-300">Full list of findings with open-and-interact workflow.</p>
+        {status ? <p className="mt-2 text-xs text-cyan-300">{status}</p> : null}
 
         {isLoading || !feed ? (
           <p className="mt-4 text-sm text-slate-300">Loading findings...</p>
@@ -36,9 +60,9 @@ export default function FindingsPage() {
                   <p className="font-semibold text-slate-100">{finding.title}</p>
                   <p className="mt-1 text-sm text-slate-300">{finding.description}</p>
                   <p className={["mt-2 text-xs font-semibold", severityClass[finding.severity] || "text-slate-300"].join(" ")}>
-                    {finding.severity.toUpperCase()} · {finding.deviceId}
+                    {finding.severity.toUpperCase()} · {finding.deviceId} · status: {finding.status}
                   </p>
-                  <div className="mt-3 flex gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <button
                       onClick={() => setOpened(finding)}
                       className={[
@@ -61,6 +85,18 @@ export default function FindingsPage() {
                     >
                       {active ? "Selected" : "Select"}
                     </button>
+                    <button
+                      onClick={() => act(finding, "investigate")}
+                      className="rounded-md border border-emerald-300/50 bg-emerald-300/10 px-3 py-2 text-xs text-emerald-200"
+                    >
+                      Investigate
+                    </button>
+                    <button
+                      onClick={() => act(finding, "escalate")}
+                      className="rounded-md border border-rose-300/40 bg-rose-300/10 px-3 py-2 text-xs text-rose-200"
+                    >
+                      Escalate
+                    </button>
                   </div>
                 </li>
               );
@@ -79,14 +115,23 @@ export default function FindingsPage() {
               {opened.severity.toUpperCase()} · {opened.deviceId}
             </p>
             <div className="mt-4 grid gap-2">
-              <button className="rounded-md border border-emerald-300/50 bg-emerald-300/10 px-3 py-2 text-xs text-emerald-200">
+              <button
+                onClick={() => act(opened, "open_device")}
+                className="rounded-md border border-emerald-300/50 bg-emerald-300/10 px-3 py-2 text-xs text-emerald-200"
+              >
                 Open Device Investigation
               </button>
-              <button className="rounded-md border border-cyan-300/50 bg-cyan-300/10 px-3 py-2 text-xs text-cyan-200">
-                Link to Event Timeline
+              <button
+                onClick={() => act(opened, "ack")}
+                className="rounded-md border border-cyan-300/50 bg-cyan-300/10 px-3 py-2 text-xs text-cyan-200"
+              >
+                Acknowledge
               </button>
-              <button className="rounded-md border border-amber-300/50 bg-amber-300/10 px-3 py-2 text-xs text-amber-200">
-                Mark for Escalation
+              <button
+                onClick={() => doExport(opened)}
+                className="rounded-md border border-amber-300/50 bg-amber-300/10 px-3 py-2 text-xs text-amber-200"
+              >
+                Export JSON
               </button>
             </div>
           </>

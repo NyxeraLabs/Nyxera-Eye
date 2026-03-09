@@ -21,12 +21,20 @@ export type EventLocation = {
   timestamp: string;
 };
 
+export type FindingAction = {
+  action: string;
+  at: string;
+};
+
 export type Finding = {
   id: string;
   title: string;
   description: string;
   severity: Severity;
   deviceId: string;
+  status: string;
+  actions: FindingAction[];
+  updatedAt: string;
 };
 
 export type OpsMetrics = {
@@ -34,6 +42,13 @@ export type OpsMetrics = {
   miningThroughput: number;
   probeSuccessRate: number;
   storageGrowthGb: number;
+  scanRuns: number;
+  findingsBySeverity: Record<string, number>;
+  devicesByCountry: Record<string, number>;
+  scanHistory: Array<{ run: number; timestamp: string; devices: number; findings: number; events: number }>;
+  scanLoopRunning: boolean;
+  scanLoopBatchSize: number;
+  scanLoopIntervalSeconds: number;
 };
 
 export type OpsFeed = {
@@ -42,5 +57,5 @@ export type OpsFeed = {
   events: EventLocation[];
   findings: Finding[];
   metrics: OpsMetrics;
-  source: "api" | "fallback";
+  source: string;
 };

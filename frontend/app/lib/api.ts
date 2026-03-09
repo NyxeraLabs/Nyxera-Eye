@@ -1,8 +1,11 @@
-import { deviceLocations, eventLocations, findings } from "./data";
 import type { DeviceLocation, EventLocation, Finding, OpsFeed } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_NYXERA_API_BASE || "http://127.0.0.1:8000";
 const API_TOKEN = process.env.NEXT_PUBLIC_NYXERA_API_TOKEN || "";
+
+function buildHeaders(): HeadersInit {
+  return API_TOKEN ? { "X-API-Token": API_TOKEN } : {};
+}
 
 function normalizeSeverity(value: unknown): "critical" | "high" | "medium" | "low" {
   const v = String(value || "low").toLowerCase();
@@ -66,38 +69,26 @@ function normalizeFindings(input: unknown): Finding[] {
       description: String(record.description || "No description"),
       severity: normalizeSeverity(record.severity),
       deviceId: String(record.device_id || record.deviceId || "unknown"),
+      status: String(record.status || "open"),
+      actions: Array.isArray(record.actions) ? (record.actions as Array<Record<string, unknown>>) : [],
+      updatedAt: String(record.updated_at || new Date().toISOString()),
     };
   });
 }
 
-function fallbackFeed(): OpsFeed {
-  return {
-    generatedAt: new Date().toISOString(),
-    devices: deviceLocations,
-    events: eventLocations,
-    findings,
-    metrics: {
-      queueDepth: 12,
-      miningThroughput: 245.5,
-      probeSuccessRate: 97.2,
-      storageGrowthGb: 1.24,
-    },
-    source: "fallback",
-  };
-}
-
-export async function fetchOpsFeed(): Promise<OpsFeed> {
+export async function fetchOpsFeed(): Promise<OpsFeed | null> {
   try {
     const response = await fetch(`${API_BASE}/frontend/ops-feed`, {
-      headers: API_TOKEN ? { "X-API-Token": API_TOKEN } : {},
+      headers: buildHeaders(),
       cache: "no-store",
     });
 
     if (!response.ok) {
-      return fallbackFeed();
+      return null;
     }
 
     const payload = (await response.json()) as Record<string, unknown>;
+    const metrics = (payload.metrics as Record<string, unknown> | undefined) || {};
 
     return {
       generatedAt: String(payload.generated_at || new Date().toISOString()),
@@ -105,14 +96,93 @@ export async function fetchOpsFeed(): Promise<OpsFeed> {
       events: normalizeEvents(payload.events),
       findings: normalizeFindings(payload.findings),
       metrics: {
-        queueDepth: Number((payload.metrics as Record<string, unknown> | undefined)?.queue_depth ?? 0),
-        miningThroughput: Number((payload.metrics as Record<string, unknown> | undefined)?.mining_throughput ?? 0),
-        probeSuccessRate: Number((payload.metrics as Record<string, unknown> | undefined)?.probe_success_rate ?? 0),
-        storageGrowthGb: Number((payload.metrics as Record<string, unknown> | undefined)?.storage_growth_gb ?? 0),
+        queueDepth: Number(metrics.queue_depth ?? 0),
+        miningThroughput: Number(metrics.mining_throughput ?? 0),
+        probeSuccessRate: Number(metrics.probe_success_rate ?? 0),
+        storageGrowthGb: Number(metrics.storage_growth_gb ?? 0),
+        scanRuns: Number(metrics.scan_runs ?? 0),
+        findingsBySeverity: (metrics.findings_by_severity as Record<string, number>) || {},
+        devicesByCountry: (metrics.devices_by_country as Record<string, number>) || {},
+        scanHistory: Array.isArray(metrics.scan_history)
+          ? (metrics.scan_history as Array<{ run: number; timestamp: string; devices: number; findings: number; events: number }>)
+          : [],
+        scanLoopRunning: Boolean(metrics.scan_loop_running ?? false),
+        scanLoopBatchSize: Number(metrics.scan_loop_batch_size ?? 0),
+        scanLoopIntervalSeconds: Number(metrics.scan_loop_interval_seconds ?? 0),
       },
-      source: "api",
+      source: String(payload.source || "api-runtime"),
     };
   } catch {
-    return fallbackFeed();
+    return null;
+  }
+}
+
+export async function triggerScan(batchSize: number = 96): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE}/frontend/scan?batch_size=${batchSize}`, {
+      method: "POST",
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function startScanLoop(batchSize: number = 96, intervalSeconds: number = 10): Promise<boolean> {
+  try {
+    const response = await fetch(
+      `${API_BASE}/frontend/scan/start?batch_size=${batchSize}&interval_seconds=${intervalSeconds}`,
+      {
+        method: "POST",
+        headers: buildHeaders(),
+        cache: "no-store",
+      }
+    );
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function stopScanLoop(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE}/frontend/scan/stop`, {
+      method: "POST",
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function performFindingAction(findingId: string, action: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE}/frontend/findings/${findingId}/action?action=${encodeURIComponent(action)}`, {
+      method: "POST",
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function exportFinding(findingId: string): Promise<Record<string, unknown> | null> {
+  try {
+    const response = await fetch(`${API_BASE}/frontend/findings/${findingId}/export`, {
+      headers: buildHeaders(),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return (await response.json()) as Record<string, unknown>;
+  } catch {
+    return null;
   }
 }
