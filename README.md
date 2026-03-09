@@ -1,169 +1,120 @@
 <!--
 Copyright (c) 2026 NyxeraLabs
-Author: José María Micoli
+Author: Jose Maria Micoli
 Licensed under BSL 1.1
-Change Date: 2033-03-09 → Apache-2.0
+Change Date: 2033-03-09 -> Apache-2.0
 -->
 
 # Nyxera Eye
 
-**Nyxera Eye** is an **IoT and ICS Attack Surface Intelligence Platform** designed for **security research and authorized red-team operations**.
+Nyxera Eye is an IoT and ICS attack surface intelligence platform for authorized security research and defensive operations.
 
-The platform discovers, fingerprints, and analyzes exposed internet infrastructure to help security teams understand **real-world exposure risks**.
+It combines OSINT ingestion, service fingerprinting, vulnerability intelligence, and operator-facing investigation surfaces into one workflow-oriented product.
 
-Nyxera Eye integrates global OSINT intelligence, device fingerprinting, vulnerability intelligence, and visualization into a single operational platform.
+## Product Highlights
 
----
+- Multi-source OSINT ingestion (Shodan, Censys, ZoomEye)
+- Worker-based processing and canonical schema normalization
+- Fingerprinting stack (favicon MMH3, JA3, JARM)
+- Vulnerability intelligence (CVE mirror, firmware mapping, exploit detection, risk scoring)
+- Operator interfaces (TUI workflows and API command center primitives)
+- Media and vision metadata pipeline
+- Change detection across infrastructure snapshots
+- Security controls (RBAC, API tokens, encrypted secrets, rate limiting)
+- Observability metrics and tracing utilities
 
-# Core Capabilities
+## Operating Model
 
-• Global exposure discovery
-• IoT and ICS fingerprinting
-• Infrastructure clustering and tracking
-• Vulnerability intelligence correlation
-• Real-time exposure monitoring
-• Attack surface visualization
-• Threat-informed adversary emulation (authorized mode)
+Nyxera Eye is built around two safety modes:
 
----
+- Passive Intelligence Mode (default): non-intrusive intelligence collection only
+- Authorized Scope Mode: deeper actions allowed only for explicitly approved scope
 
-# Operating Modes
+Compliance controls include blacklist support, opt-out registry, audit logging, and legal disclosure artifacts.
 
-Nyxera Eye includes two safety modes.
+## Quick Start
 
-### Passive Intelligence Mode (default)
+```bash
+cd /home/xoce/Workspace/Nyxera-Eye
+make install
+make qa
+```
 
-Only non-intrusive OSINT collection:
+Expected E2E success line:
 
-* Shodan
-* Censys
-* ZoomEye
-* Public banner data
-* TLS fingerprinting
-* Metadata correlation
+```text
+E2E full roadmap validation passed (local deterministic path).
+```
 
-No authentication attempts or exploitation occurs.
+## Makefile Workflow
 
-### Authorized Scope Mode
+Core commands:
 
-Used only during **approved security assessments**.
+```bash
+make help
+make install
+make compile
+make test
+make infra-check
+make e2e
+make qa
+make up
+make down
+make run-api
+```
 
-Allows deeper enumeration inside a **defined CIDR or domain scope**.
+## Documentation
 
-All operator activity is logged.
+- Manuals index: [docs/manuals/INDEX.md](docs/manuals/INDEX.md)
+- QA runbook: [docs/RUNBOOK.md](docs/RUNBOOK.md)
+- E2E audit: [docs/E2E_AUDIT.md](docs/E2E_AUDIT.md)
+- Development sprint logs: [docs/dev-logs/INDEX.md](docs/dev-logs/INDEX.md)
+- Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
+- Security policy: [SECURITY.md](SECURITY.md)
+- Disclaimer: [DISCLAIMER.md](DISCLAIMER.md)
 
----
+## Architecture Snapshot
 
-# System Architecture
+```text
+OSINT Sources
+-> Collectors
+-> Queue
+-> Processing Workers
+-> Canonical Device Schema
+-> Storage (MongoDB/OpenSearch/MinIO)
+-> API + TUI/Web Investigation Surfaces
+```
 
-Nyxera Eye uses a distributed architecture designed to scale to millions of assets.
+## Deployment Notes
 
-Data pipeline:
+Infrastructure configuration is defined in `docker-compose.yml`.
 
-Data Sources
-→ Collectors
-→ Redis Streams
-→ Processing Workers
-→ Device Intelligence Schema
-→ MongoDB + OpenSearch
-→ FastAPI API Layer
-→ Operator Interfaces (TUI + Web)
+Validate deployment config before startup:
 
-Binary assets such as snapshots are stored in **MinIO S3**.
+```bash
+make infra-check
+```
 
----
+Start local stack:
 
-# Technology Stack
+```bash
+make up
+```
 
-Backend
+## Disclaimer
 
-Python 3.12
-FastAPI
-Redis Streams
-MongoDB
-OpenSearch
+Nyxera Eye is for authorized security testing and defensive research only.
 
-Infrastructure
+Do not use this project for unauthorized access, disruption, or exploitation. You are responsible for legal compliance in your jurisdiction and target environment.
 
-Docker
-MinIO S3
-Prometheus
-Grafana
+This software is provided "as is" without warranties; maintainers and contributors are not liable for misuse.
 
-Interfaces
+Full text: [DISCLAIMER.md](DISCLAIMER.md)
 
-Textual (Terminal UI)
-React (Web Dashboard)
+## License
 
----
+Business Source License 1.1 (BSL). See [LICENSE](LICENSE).
 
-# Repository Structure
+## Copyright
 
-nyxera-eye/
-
-core/
-collectors/
-fingerprinting/
-probing/
-vulnintel/
-ai/
-api/
-tui/
-frontend/
-automation/
-storage/
-tests/
-
-docs/
-docker/
-infra/
-config/
-
----
-
-# Legal and Ethical Use
-
-Nyxera Eye is designed **strictly for security research and authorized security testing**.
-
-Prohibited uses include:
-
-• Unauthorized access
-• Privacy violations
-• Illegal surveillance
-• Exploitation of systems without permission
-
-The platform includes:
-
-• Passive Intelligence Mode
-• Authorized Scope Mode
-• Audit logging
-• Opt-out registry
-• Responsible disclosure policy
-
----
-
-# Responsible Disclosure
-
-If Nyxera Eye identifies exposed infrastructure that may present security risks, findings should be reported responsibly following industry disclosure standards.
-
----
-
-# License
-
-Business Source License 1.1 (BSL)
-
-Additional Use Grant allows use for:
-
-• security research
-• defensive security teams
-• authorized red-team engagements
-
-Commercial use restrictions may apply.
-
----
-
-# Status
-
-Early development (R&D stage).
-
-Nyxera Eye is being built by **Nyxera Labs**.
+Copyright (c) 2026 NyxeraLabs. All rights reserved.

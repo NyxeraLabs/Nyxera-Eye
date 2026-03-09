@@ -13,6 +13,7 @@ This index is the entry point for all operator, developer, and QA documentation.
 - [Getting Started](guides/GETTING_STARTED.md)
 - [Installation Guide](guides/INSTALLATION.md)
 - [E2E Validation Guide](guides/E2E_VALIDATION.md)
+- [Makefile Operations Guide](guides/MAKEFILE_OPERATIONS.md)
 
 ## Manuals
 
@@ -34,3 +35,5 @@ This index is the entry point for all operator, developer, and QA documentation.
 - [Compliance Policy](../COMPLIANCE.md)
 - [Ethics Policy](../ETHICS.md)
 - [Security Disclosure Policy](../SECURITY_DISCLOSURE.md)
+- [Security Policy](../../SECURITY.md)
+- [Disclaimer](../../DISCLAIMER.md)
