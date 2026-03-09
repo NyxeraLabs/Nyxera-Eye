@@ -1,0 +1,31 @@
+# Copyright (c) 2026 NyxeraLabs
+# Author: José María Micoli
+# Licensed under BSL 1.1
+# Change Date: 2033-02-17 → Apache-2.0
+#
+# You may:
+# ✔ Study
+# ✔ Modify
+# ✔ Use for internal security testing
+#
+# You may NOT:
+# ✘ Offer as a commercial service
+# ✘ Sell derived competing products
+
+[tool.poetry]
+name = "nyxera-eye"
+version = "0.1.0"
+description = "Nyxera Eye modular offensive security and AI-assisted reconnaissance platform"
+authors = ["José María Micoli"]
+readme = "README.md"
+packages = [{ include = "nyxera_eye", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
