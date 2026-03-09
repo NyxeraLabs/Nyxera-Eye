@@ -627,7 +627,7 @@ Device reappears
 Tasks:
 
 ```
-[ ] commit: Diff Engine
+[x] commit: Diff Engine
 ```
 
 Alerts:
