@@ -1030,7 +1030,7 @@ Extract device model and firmware hints from discovered services.
 * [x] Detect firmware version hints
 * [x] Store fingerprint data in database
 * [x] Add fingerprint information to asset API
-* [ ] Display fingerprint data in UI
+* [x] Display fingerprint data in UI
 
 ### Commit Plan
 
