@@ -13,5 +13,6 @@
 # ✘ Sell derived competing products
 
 from web.assets.fingerprint_panel import render_fingerprint_panel
+from web.assets.vendor_table import render_vendor_table
 
-__all__ = ["render_fingerprint_panel"]
+__all__ = ["render_fingerprint_panel", "render_vendor_table"]

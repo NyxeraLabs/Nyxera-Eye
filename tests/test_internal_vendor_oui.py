@@ -12,7 +12,12 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from internal.intel.vendor import OUIVendorDatabase, detect_vendor_from_http_headers
+from internal.intel.vendor import (
+    OUIVendorDatabase,
+    VendorDetectionEngine,
+    detect_vendor_from_http_headers,
+    detect_vendor_from_tls_certificate,
+)
 
 
 def test_oui_vendor_database_looks_up_known_vendor() -> None:
@@ -52,3 +57,32 @@ def test_detect_vendor_from_http_headers_returns_none_when_no_match_exists() -> 
     vendor = detect_vendor_from_http_headers({"Server": "nginx/1.25.3"})
 
     assert vendor is None
+
+
+def test_detect_vendor_from_tls_certificate_matches_known_vendor_strings() -> None:
+    vendor = detect_vendor_from_tls_certificate(
+        subject="CN=controller.axis.local,O=Axis Communications AB",
+        issuer="CN=Axis Root CA,O=Axis Communications AB",
+    )
+
+    assert vendor == "Axis Communications"
+
+
+def test_vendor_detection_engine_uses_http_then_tls_then_oui_priority() -> None:
+    engine = VendorDetectionEngine(OUIVendorDatabase({"AA:BB:CC": "Acme Devices"}))
+
+    vendor = engine.detect(
+        mac_address="aa:bb:cc:00:11:22",
+        http_headers={"Server": "Dahua Embedded Web Server"},
+        tls_subject="CN=Axis Device,O=Axis Communications AB",
+    )
+
+    assert vendor == "Dahua"
+
+
+def test_vendor_detection_engine_falls_back_to_oui() -> None:
+    engine = VendorDetectionEngine(OUIVendorDatabase({"AA:BB:CC": "Acme Devices"}))
+
+    vendor = engine.detect(mac_address="aa:bb:cc:00:11:22")
+
+    assert vendor == "Acme Devices"
