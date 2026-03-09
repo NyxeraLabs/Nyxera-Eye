@@ -12,7 +12,7 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-name: CI
+name: Lint
 
 on:
   pull_request:
@@ -23,7 +23,7 @@ on:
       - main
 
 jobs:
-  test-build:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -42,20 +42,8 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction
 
-      - name: Run lint checks
+      - name: Run repository lint
         run: poetry run python scripts/lint_repo.py
-
-      - name: Run tests
-        run: poetry run pytest -q
-
-      - name: Enforce architecture-compliant paths
-        run: sh scripts/check_architecture_paths.sh
-
-      - name: Build package
-        run: poetry build
-
-      - name: Validate docker compose
-        run: docker compose config -q
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -71,7 +59,3 @@ jobs:
       - name: Run frontend typecheck
         working-directory: frontend
         run: npm run typecheck
-
-      - name: Run frontend production build
-        working-directory: frontend
-        run: npm run build

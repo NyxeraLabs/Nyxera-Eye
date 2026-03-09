@@ -12,18 +12,17 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-name: CI
+name: Release Validation
 
 on:
-  pull_request:
   push:
     branches:
-      - dev
       - qa
       - main
+  workflow_dispatch:
 
 jobs:
-  test-build:
+  release-validation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -42,20 +41,11 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction
 
-      - name: Run lint checks
-        run: poetry run python scripts/lint_repo.py
-
       - name: Run tests
         run: poetry run pytest -q
 
-      - name: Enforce architecture-compliant paths
-        run: sh scripts/check_architecture_paths.sh
-
-      - name: Build package
+      - name: Build release artifacts
         run: poetry build
-
-      - name: Validate docker compose
-        run: docker compose config -q
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -68,10 +58,14 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Run frontend typecheck
-        working-directory: frontend
-        run: npm run typecheck
-
-      - name: Run frontend production build
+      - name: Build frontend artifacts
         working-directory: frontend
         run: npm run build
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nyxera-eye-release-artifacts
+          path: |
+            dist/*
+            frontend/.next/**

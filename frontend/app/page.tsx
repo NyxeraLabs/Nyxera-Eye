@@ -264,7 +264,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {device.services.map((service) => (
+                    {(device.services || []).map((service) => (
                       <span key={`${device.id}-${service.port}`} className="rounded-full border border-emerald-300/15 bg-emerald-300/5 px-2 py-1 text-[11px] text-emerald-200">
                         {service.service}/{service.port}
                       </span>
