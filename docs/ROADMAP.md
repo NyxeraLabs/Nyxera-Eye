@@ -1210,12 +1210,12 @@ Fix the broken investigation workflow and add asset intelligence view.
 
 ### Tasks
 
-* [ ] Fix investigate button event handler
-* [ ] Implement asset detail API endpoint
-* [ ] Build asset detail UI page
-* [ ] Display services per asset
-* [ ] Display fingerprint information
-* [ ] Display vulnerability indicators
+* [x] Fix investigate button event handler
+* [x] Implement asset detail API endpoint
+* [x] Build asset detail UI page
+* [x] Display services per asset
+* [x] Display fingerprint information
+* [x] Display vulnerability indicators
 
 ### Commit Plan
 

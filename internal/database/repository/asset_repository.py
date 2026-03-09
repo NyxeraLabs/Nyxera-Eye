@@ -232,3 +232,13 @@ class AssetRepository:
             ],
             scan_history=[],
         )
+
+    def get_by_ip(self, ip: str) -> AssetRecord | None:
+        with sqlite3.connect(self.db_path) as conn:
+            row = conn.execute(
+                "SELECT asset_id FROM assets WHERE ip = ?",
+                (ip,),
+            ).fetchone()
+        if row is None:
+            return None
+        return self.get(str(row[0]))
