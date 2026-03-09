@@ -1,0 +1,53 @@
+# Copyright (c) 2026 NyxeraLabs
+# Author: José María Micoli
+# Licensed under BSL 1.1
+# Change Date: 2033-02-17 → Apache-2.0
+#
+# You may:
+# ✔ Study
+# ✔ Modify
+# ✔ Use for internal security testing
+#
+# You may NOT:
+# ✘ Offer as a commercial service
+# ✘ Sell derived competing products
+
+name: License Header Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - dev
+      - qa
+      - main
+
+jobs:
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check license headers
+        run: |
+          set -eu
+          echo "Checking license headers..."
+
+          FILES="$(git ls-files '*.go' '*.rs' '*.py' '*.ts' '*.js' '*.tsx' '*.sh' '*.yaml' '*.yml' || true)"
+          if [ -z "${FILES}" ]; then
+            echo "No target files found."
+            exit 0
+          fi
+
+          MISSING="$(printf '%s\n' "${FILES}" \
+            | grep -vE '(^|/)(node_modules|vendor|dist|build)/' \
+            | xargs grep -L "Copyright (c) 2026 NyxeraLabs" || true)"
+
+          if [ -n "${MISSING}" ]; then
+            echo "Files missing license header:"
+            printf '%s\n' "${MISSING}"
+            exit 1
+          fi
+
+          echo "All files contain license headers."
