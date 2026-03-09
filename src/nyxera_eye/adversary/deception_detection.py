@@ -61,4 +61,4 @@ def _has_timing_anomaly(samples: list[float]) -> bool:
     if avg == 0:
         return False
     peak = max(samples)
-    return peak > avg * 3.0
+    return peak > avg * 2.0

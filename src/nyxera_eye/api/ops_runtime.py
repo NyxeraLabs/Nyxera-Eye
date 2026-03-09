@@ -127,41 +127,44 @@ class OpsRuntimeStore:
                 }
             )
             self._scan_history = self._scan_history[-24:]
-            return self.snapshot()
+            return self._snapshot_unlocked()
 
     def snapshot(self) -> dict:
         with self._lock:
-            severity_counts: dict[str, int] = {level: 0 for level in _SEVERITIES}
-            country_counts: dict[str, int] = {}
+            return self._snapshot_unlocked()
 
-            for finding in self._findings:
-                severity_counts[str(finding.get("severity", "low"))] = severity_counts.get(
-                    str(finding.get("severity", "low")), 0
-                ) + 1
-            for device in self._devices:
-                country = str(device.get("country", "N/A"))
-                country_counts[country] = country_counts.get(country, 0) + 1
+    def _snapshot_unlocked(self) -> dict:
+        severity_counts: dict[str, int] = {level: 0 for level in _SEVERITIES}
+        country_counts: dict[str, int] = {}
 
-            return {
-                "generated_at": self._generated_at,
-                "devices": list(self._devices),
-                "events": list(self._events),
-                "findings": list(self._findings),
-                "metrics": {
-                    "queue_depth": max(0, int(len(self._devices) * 0.22)),
-                    "mining_throughput": round(max(1.0, len(self._devices) * 3.9), 2),
-                    "probe_success_rate": round(86.0 + (len(self._events) / max(1, len(self._devices))) * 14.0, 2),
-                    "storage_growth_gb": round(len(self._findings) * 0.041, 3),
-                    "scan_runs": self._scan_runs,
-                    "findings_by_severity": severity_counts,
-                    "devices_by_country": country_counts,
-                    "scan_history": list(self._scan_history),
-                    "scan_loop_running": self._loop_running,
-                    "scan_loop_batch_size": self._loop_batch_size,
-                    "scan_loop_interval_seconds": self._loop_interval_seconds,
-                },
-                "source": "api-runtime",
-            }
+        for finding in self._findings:
+            severity_counts[str(finding.get("severity", "low"))] = severity_counts.get(
+                str(finding.get("severity", "low")), 0
+            ) + 1
+        for device in self._devices:
+            country = str(device.get("country", "N/A"))
+            country_counts[country] = country_counts.get(country, 0) + 1
+
+        return {
+            "generated_at": self._generated_at,
+            "devices": list(self._devices),
+            "events": list(self._events),
+            "findings": list(self._findings),
+            "metrics": {
+                "queue_depth": max(0, int(len(self._devices) * 0.22)),
+                "mining_throughput": round(max(1.0, len(self._devices) * 3.9), 2),
+                "probe_success_rate": round(86.0 + (len(self._events) / max(1, len(self._devices))) * 14.0, 2),
+                "storage_growth_gb": round(len(self._findings) * 0.041, 3),
+                "scan_runs": self._scan_runs,
+                "findings_by_severity": severity_counts,
+                "devices_by_country": country_counts,
+                "scan_history": list(self._scan_history),
+                "scan_loop_running": self._loop_running,
+                "scan_loop_batch_size": self._loop_batch_size,
+                "scan_loop_interval_seconds": self._loop_interval_seconds,
+            },
+            "source": "api-runtime",
+        }
 
     def start_scan_loop(self, batch_size: int = 96, interval_seconds: int = 10) -> bool:
         with self._lock:
