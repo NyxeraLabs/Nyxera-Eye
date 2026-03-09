@@ -1254,12 +1254,12 @@ Expose asset intelligence data through API endpoints.
 
 ### Tasks
 
-* [ ] Create `/assets` endpoint
-* [ ] Create `/assets/{ip}` endpoint
-* [ ] Create `/assets/{ip}/services` endpoint
-* [ ] Create `/assets/high-risk` endpoint
-* [ ] Add pagination
-* [ ] Add filtering options
+* [x] Create `/assets` endpoint
+* [x] Create `/assets/{ip}` endpoint
+* [x] Create `/assets/{ip}/services` endpoint
+* [x] Create `/assets/high-risk` endpoint
+* [x] Add pagination
+* [x] Add filtering options
 
 ### Commit Plan
 

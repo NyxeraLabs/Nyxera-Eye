@@ -242,3 +242,25 @@ class AssetRepository:
         if row is None:
             return None
         return self.get(str(row[0]))
+
+    def list_assets(
+        self,
+        vendor: str | None = None,
+        min_risk_score: float | None = None,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[AssetRecord]:
+        query = "SELECT asset_id FROM assets WHERE 1=1"
+        params: list[object] = []
+        if vendor:
+            query += " AND lower(vendor) = lower(?)"
+            params.append(vendor)
+        if min_risk_score is not None:
+            query += " AND coalesce(risk_score, 0) >= ?"
+            params.append(min_risk_score)
+        query += " ORDER BY coalesce(risk_score, 0) DESC, asset_id ASC LIMIT ? OFFSET ?"
+        params.extend([max(1, limit), max(0, offset)])
+
+        with sqlite3.connect(self.db_path) as conn:
+            rows = conn.execute(query, params).fetchall()
+        return [self.get(str(row[0])) for row in rows if row and self.get(str(row[0])) is not None]
