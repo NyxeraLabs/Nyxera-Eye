@@ -1,77 +1,96 @@
+<!--
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+-->
+
 # API Manual
 
-## 1. Authentication
+## Authentication
 
-Protected endpoints require header:
+Protected endpoints require:
 
 ```text
 X-API-Token: <token>
 ```
 
 Role hierarchy:
+
 - `viewer`
 - `analyst`
 - `operator`
 - `admin`
 
-## 2. Endpoints
+## Core Runtime Endpoints
 
 ### Public
 
 - `GET /health`
-  - response: `{"status":"ok"}`
+- `GET /frontend/ops-feed`
+- `POST /frontend/scan`
+- `POST /frontend/scan/start`
+- `POST /frontend/scan/stop`
+- `GET /frontend/scan/status`
+- `GET /frontend/devices`
+- `GET /frontend/devices/{device_id}`
+- `GET /frontend/findings`
+- `GET /frontend/findings/{finding_id}`
+- `POST /frontend/findings/{finding_id}/action`
+- `GET /frontend/findings/{finding_id}/export`
 
 ### Analyst+
 
+- `GET /frontend/settings`
 - `GET /search/opensearch`
-  - query params:
-    - `q`
-    - `asn`
-    - `vendor`
-    - `vulnerability`
-    - `country`
-    - `exposure_score_min`
-
 - `POST /ui/target-card`
-  - body: raw device document
-  - response: summarized target card
 
 ### Operator+
 
 - `POST /command-center/map`
-  - body: device list
-  - response: map points
-
 - `POST /command-center/vulnerability-distribution`
-  - body: device list
-  - response: severity distribution
 
 ### Admin
 
+- `PUT /frontend/settings`
+- `GET /audit/events`
 - `GET /command-center/telemetry`
-  - params:
-    - `scan_throughput`
-    - `probe_latency_ms`
-    - `active_discoveries`
-
 - `GET /observability/prometheus`
-  - params:
-    - `queue_depth`
-    - `mining_throughput`
-    - `probe_success_rate`
-    - `gpu_utilization`
-    - `storage_growth_gb`
 
-## 3. Error Behavior
+## Useful Query Parameters
 
-- `401`: missing or invalid token
-- `403`: role does not satisfy endpoint minimum
-- `429`: per-subject rate limit exceeded
+### Device registry
 
-## 4. Manual API Smoke
+`GET /frontend/devices`
 
-```bash
-curl -s http://127.0.0.1:8000/health
-curl -i -s "http://127.0.0.1:8000/search/opensearch?q=camera"
-curl -i -s -H "X-API-Token: <TOKEN>" "http://127.0.0.1:8000/search/opensearch?q=camera"
-```
+- `q`
+- `severity`
+- `country`
+- `vendor`
+- `limit`
+- `offset`
+
+### Findings registry
+
+`GET /frontend/findings`
+
+- `q`
+- `severity`
+- `status`
+- `device_id`
+- `limit`
+- `offset`
+
+## Behavior Notes
+
+- scan results accumulate into a stable inventory
+- findings remain linked to stable device IDs
+- finding actions update status and action history
+- device detail returns linked finding and recent events
+
+## Error Behavior
+
+- `401` missing or invalid token
+- `403` role below endpoint requirement
+- `404` unknown device or finding
+- `429` rate limit exceeded

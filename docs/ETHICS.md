@@ -2,7 +2,7 @@
 Copyright (c) 2026 NyxeraLabs
 Author: José María Micoli
 Licensed under BSL 1.1
-Change Date: 2033-03-09 → Apache-2.0
+Change Date: 2033-02-17 → Apache-2.0
 -->
 
 # Research Ethics Policy

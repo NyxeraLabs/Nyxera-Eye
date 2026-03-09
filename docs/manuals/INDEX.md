@@ -1,39 +1,41 @@
+<!--
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+-->
+
 # Nyxera Eye Manuals Index
 
-This index is the entry point for all operator, developer, and QA documentation.
+This index points to the current runtime and operator documentation.
 
 ## Start Here
 
-- [Full User Guide](manuals/USER_GUIDE.md)
-- [Getting Started](guides/GETTING_STARTED.md)
-- [Installation Guide](guides/INSTALLATION.md)
+- [guides/GETTING_STARTED.md](guides/GETTING_STARTED.md)
+- [guides/INSTALLATION.md](guides/INSTALLATION.md)
+- [manuals/USER_GUIDE.md](manuals/USER_GUIDE.md)
 
 ## Guides
 
-- [Getting Started](guides/GETTING_STARTED.md)
-- [Installation Guide](guides/INSTALLATION.md)
-- [E2E Validation Guide](guides/E2E_VALIDATION.md)
-- [Makefile Operations Guide](guides/MAKEFILE_OPERATIONS.md)
+- [guides/GETTING_STARTED.md](guides/GETTING_STARTED.md)
+- [guides/INSTALLATION.md](guides/INSTALLATION.md)
+- [guides/E2E_VALIDATION.md](guides/E2E_VALIDATION.md)
+- [guides/MAKEFILE_OPERATIONS.md](guides/MAKEFILE_OPERATIONS.md)
 
 ## Manuals
 
-- [Full User Guide](manuals/USER_GUIDE.md)
-- [Operator Manual](manuals/OPERATOR_MANUAL.md)
-- [API Manual](manuals/API_MANUAL.md)
-- [Security and Compliance Manual](manuals/SECURITY_COMPLIANCE_MANUAL.md)
-- [Troubleshooting Manual](manuals/TROUBLESHOOTING.md)
-
-## QA and Validation
-
-- [QA Runbook](../RUNBOOK.md)
-- [E2E Audit Report](../E2E_AUDIT.md)
+- [manuals/USER_GUIDE.md](manuals/USER_GUIDE.md)
+- [manuals/OPERATOR_MANUAL.md](manuals/OPERATOR_MANUAL.md)
+- [manuals/API_MANUAL.md](manuals/API_MANUAL.md)
+- [manuals/SECURITY_COMPLIANCE_MANUAL.md](manuals/SECURITY_COMPLIANCE_MANUAL.md)
+- [manuals/TROUBLESHOOTING.md](manuals/TROUBLESHOOTING.md)
 
 ## Core Project Docs
 
-- [Roadmap](../ROADMAP.md)
-- [Infrastructure Notes](../INFRA.md)
-- [Compliance Policy](../COMPLIANCE.md)
-- [Ethics Policy](../ETHICS.md)
-- [Security Disclosure Policy](../SECURITY_DISCLOSURE.md)
-- [Security Policy](../../SECURITY.md)
-- [Disclaimer](../../DISCLAIMER.md)
+- [../RUNBOOK.md](../RUNBOOK.md)
+- [../ROADMAP.md](../ROADMAP.md)
+- [../ARCHITECTURE.md](../ARCHITECTURE.md)
+- [../ARCHITECTURE_MIGRATION.md](../ARCHITECTURE_MIGRATION.md)
+- [../COMPLIANCE.md](../COMPLIANCE.md)
+- [../ETHICS.md](../ETHICS.md)
+- [../INFRA.md](../INFRA.md)

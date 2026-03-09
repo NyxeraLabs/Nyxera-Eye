@@ -1,74 +1,66 @@
+<!--
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+-->
+
 # Troubleshooting Manual
 
-## 1. `ModuleNotFoundError: nyxera_eye`
+## `ModuleNotFoundError: nyxera_eye`
 
-Run commands with:
+Use:
 
 ```bash
 PYTHONPATH=src <command>
 ```
 
-Example:
+## `poetry` not found
 
-```bash
-PYTHONPATH=src python scripts/e2e_full_validation.py
-```
-
-## 2. `pytest` or `poetry` not found
-
-Install required tooling:
+Use the local venv flow instead:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install pytest fastapi httpx arq
+pip install pytest fastapi httpx arq uvicorn
 ```
 
-or install Poetry and run `poetry install`.
+## Scan counts reset instead of accumulating
 
-## 3. Docker Compose validation fails
+Confirm you are running the updated runtime under `src/nyxera_eye/api/ops_runtime.py`.
 
-Check Docker service status and version:
+Expected behavior now:
 
-```bash
-docker --version
-docker compose version
-docker compose config -q
-```
+- repeated single scans add to the device inventory
+- scan loop continues accumulation
+- device IDs remain stable
 
-## 4. API returns `401` on protected endpoints
+## Duplicate devices appear in the registry
 
-Confirm token is present:
+The live runtime deduplicates devices by canonical network identity.
 
-```text
-X-API-Token: <token>
-```
+If duplicates remain after updating code, restart the backend process so the in-memory store is rebuilt from the corrected runtime.
 
-If using bootstrap token, ensure env variables were exported before app start.
+## World map shows rural or sparse locations only
 
-## 5. API returns `403`
+The current runtime maps assets to a broad major-city catalog with small urban jitter.
 
-Token role is below endpoint minimum role.  
-Use correct role (`analyst`, `operator`, or `admin`) for the endpoint.
+If you still see stale rural markers:
 
-## 6. API returns `429`
+1. restart backend
+2. run a fresh scan
+3. reload `/map`
 
-Rate limiter reached max requests per window.  
-Retry after rate-limit window or raise limit for controlled test environments.
+## Frontend typecheck fails on `.next/types`
 
-## 7. E2E script fails in queue phase
+Use the current `frontend/tsconfig.json` that excludes `.next/types/**/*.ts` from standalone `tsc --noEmit`.
 
-Validate:
-- `src/nyxera_eye/queue/redis_queue.py` imports succeed
-- no local edits broke fake queue patch behavior
+## API returns `401`, `403`, or `429`
 
-## 8. Unexpected modified files after QA run
+- `401`: missing or invalid token
+- `403`: token role is too low
+- `429`: rate limit exceeded
 
-Inspect:
+## Audit page returns no rows
 
-```bash
-git status --short
-```
-
-If artifacts are expected, clean them explicitly before commit.  
-Never use destructive git commands unless approved.
+`/audit` requires an admin-capable token for the backend `GET /audit/events` route.
