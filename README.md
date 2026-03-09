@@ -61,6 +61,8 @@ make qa
 make up
 make down
 make run-api
+make run-all
+make stop-all
 ```
 
 ## Documentation
@@ -98,8 +100,14 @@ make infra-check
 Start local stack:
 
 ```bash
-make up
+make run-all
 ```
+
+Main HTTPS endpoints:
+
+- Frontend: `https://127.0.0.1:8449`
+- API Swagger: `https://127.0.0.1:8448/api/docs`
+- API OpenAPI: `https://127.0.0.1:8448/api/openapi.json`
 
 ## Disclaimer
 

@@ -1,6 +1,6 @@
 import type { DeviceLocation, EventLocation, Finding, OpsFeed } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_NYXERA_API_BASE || "http://127.0.0.1:8000";
+const API_BASE = process.env.NEXT_PUBLIC_NYXERA_API_BASE || "/api/nyxera";
 const API_TOKEN = process.env.NEXT_PUBLIC_NYXERA_API_TOKEN || "";
 
 function buildHeaders(): HeadersInit {

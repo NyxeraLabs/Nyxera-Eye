@@ -1,6 +1,15 @@
 SHELL := /bin/sh
 
-.PHONY: help install install-poetry install-venv test compile infra-check e2e qa up down run-api frontend-install frontend-dev frontend-build nginx-certs deploy docs
+API_HOST ?= 127.0.0.1
+API_PORT ?= 18080
+FRONTEND_HOST ?= 127.0.0.1
+FRONTEND_PORT ?= 3001
+VENV_DIR ?= .venv
+PYTHON ?= python3
+VENV_PY := $(VENV_DIR)/bin/python
+VENV_PIP := $(VENV_PY) -m pip
+
+.PHONY: help install install-poetry install-venv ensure-venv test compile infra-check e2e qa up down run-api frontend-install frontend-dev frontend-build nginx-certs deploy docs run-all stop-all status-all
 
 help:
 	@echo "Nyxera Eye Make Targets"
@@ -14,12 +23,15 @@ help:
 	@echo "  make qa              # Run compile + infra-check + e2e"
 	@echo "  make up              # Start infrastructure stack"
 	@echo "  make down            # Stop infrastructure stack"
-	@echo "  make run-api         # Run FastAPI app locally"
+	@echo "  make run-api         # Run FastAPI app locally via .venv"
 	@echo "  make frontend-install# Install frontend dependencies"
 	@echo "  make frontend-dev    # Run Next.js frontend dev server"
 	@echo "  make frontend-build  # Build frontend production bundle"
 	@echo "  make nginx-certs     # Generate local self-signed TLS certs for nginx"
-	@echo "  make deploy          # Start infra + API and print frontend instructions"
+	@echo "  make deploy          # Start full dockerized stack (infra + api + frontend)"
+	@echo "  make run-all         # Alias of deploy"
+	@echo "  make stop-all        # Stop full dockerized stack"
+	@echo "  make status-all      # Show running container status"
 	@echo "  make docs            # Print docs entry points"
 
 install:
@@ -33,35 +45,58 @@ install-poetry:
 	poetry install --no-interaction
 
 install-venv:
-	python3 -m venv .venv
-	. .venv/bin/activate && python -m pip install --upgrade pip && pip install pytest fastapi httpx arq
+	$(PYTHON) -m venv $(VENV_DIR)
+	$(VENV_PIP) install --upgrade pip setuptools wheel
+	$(VENV_PIP) install -e .
+	$(VENV_PIP) install pytest
+
+ensure-venv:
+	@if [ ! -x "$(VENV_PY)" ]; then \
+		echo "Creating local virtualenv under $(VENV_DIR)/"; \
+		$(MAKE) install-venv; \
+	fi
+	@if ! $(VENV_PY) -c "import uvicorn" >/dev/null 2>&1; then \
+		echo "Installing local runtime deps in $(VENV_DIR)/..."; \
+		$(VENV_PIP) install -e . pytest; \
+	fi
 
 test:
 	@if command -v poetry >/dev/null 2>&1; then \
 		poetry run pytest -q; \
 	else \
-		PYTHONPATH=src python -m pytest -q; \
+		$(MAKE) ensure-venv; \
+		PYTHONPATH=src $(VENV_PY) -m pytest -q; \
 	fi
 
 compile:
-	python -m compileall -q src tests scripts
+	@if command -v poetry >/dev/null 2>&1; then \
+		poetry run python -m compileall -q src tests scripts; \
+	else \
+		$(MAKE) ensure-venv; \
+		$(VENV_PY) -m compileall -q src tests scripts; \
+	fi
 
 infra-check:
 	docker compose config -q
 
 e2e:
-	PYTHONPATH=src python scripts/e2e_full_validation.py
+	@if command -v poetry >/dev/null 2>&1; then \
+		poetry run env PYTHONPATH=src python scripts/e2e_full_validation.py; \
+	else \
+		$(MAKE) ensure-venv; \
+		PYTHONPATH=src $(VENV_PY) scripts/e2e_full_validation.py; \
+	fi
 
 qa: compile infra-check e2e
 
 up:
-	docker compose up -d
+	docker compose up -d --build
 
 down:
 	docker compose down
 
-run-api:
-	PYTHONPATH=src uvicorn nyxera_eye.api.app:app --host 127.0.0.1 --port 8000
+run-api: ensure-venv
+	PYTHONPATH=src $(VENV_PY) -m uvicorn nyxera_eye.api.app:app --host $(API_HOST) --port $(API_PORT)
 
 frontend-install:
 	cd frontend && npm install
@@ -71,7 +106,7 @@ frontend-dev:
 		echo "Frontend dependencies not found. Installing..."; \
 		$(MAKE) frontend-install; \
 	fi
-	cd frontend && npm run dev
+	cd frontend && npm run dev -- --hostname $(FRONTEND_HOST) -p $(FRONTEND_PORT)
 
 frontend-build:
 	@if [ ! -x frontend/node_modules/.bin/next ]; then \
@@ -91,8 +126,16 @@ nginx-certs:
 
 deploy: nginx-certs up
 	@echo "Infrastructure started."
-	@echo "Run API: make run-api"
-	@echo "Run frontend: make frontend-dev (auto-installs deps if needed)"
+	@echo "API docs: https://127.0.0.1:8448/api/docs"
+	@echo "Frontend: https://127.0.0.1:8449"
+
+run-all: deploy
+
+stop-all:
+	docker compose down
+
+status-all:
+	docker compose ps
 
 docs:
 	@echo "Manuals index: docs/manuals/INDEX.md"

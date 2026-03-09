@@ -1,6 +1,8 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.venv/
+.run/
 
 # Frontend build/dependency artifacts
 frontend/node_modules/

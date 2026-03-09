@@ -61,7 +61,13 @@ def _authorize(token: str | None, required_role: str) -> TokenRecord:
     return record
 
 if FastAPI is not None:
-    app = FastAPI(title="Nyxera Eye API", version="0.1.0")
+    app = FastAPI(
+        title="Nyxera Eye API",
+        version="0.1.0",
+        docs_url="/api/docs",
+        redoc_url="/api/redoc",
+        openapi_url="/api/openapi.json",
+    )
 
     async def _require_analyst(x_api_token: str | None = Header(default=None, alias="X-API-Token")) -> TokenRecord:
         return _authorize(x_api_token, required_role="analyst")
