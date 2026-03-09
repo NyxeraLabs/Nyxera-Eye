@@ -304,8 +304,8 @@ media:
 Tasks:
 
 ```
-[ ] commit: Implement schema validation
-[ ] commit: Implement schema migration utilities
+[x] commit: Implement schema validation
+[x] commit: Implement schema migration utilities
 ```
 
 ---
