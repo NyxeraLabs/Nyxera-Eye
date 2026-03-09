@@ -599,6 +599,14 @@ Validation:
 test against 500+ images
 ```
 
+Tasks:
+
+```
+[x] commit: Vision pipeline (Snapshot -> AI queue -> Vision worker -> Metadata tags)
+[x] commit: YOLO adapter tag normalization
+[x] commit: Vision dataset validation threshold (500+ images)
+```
+
 ---
 
 # Phase 14 — Change Detection Engine
