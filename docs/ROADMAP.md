@@ -1056,11 +1056,11 @@ Identify vendor/manufacturer of discovered devices.
 
 * [x] Integrate MAC OUI vendor database
 * [x] Detect vendor from HTTP headers
-* [ ] Detect vendor from TLS certificates
-* [ ] Create vendor detection engine
-* [ ] Add vendor field to asset database
-* [ ] Display vendor column in UI table
-* [ ] Add vendor to API response
+* [x] Detect vendor from TLS certificates
+* [x] Create vendor detection engine
+* [x] Add vendor field to asset database
+* [x] Display vendor column in UI table
+* [x] Add vendor to API response
 
 ### Commit Plan
 

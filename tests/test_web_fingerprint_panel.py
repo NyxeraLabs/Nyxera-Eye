@@ -12,7 +12,7 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from web.assets import render_fingerprint_panel
+from web.assets import render_fingerprint_panel, render_vendor_table
 
 
 def test_render_fingerprint_panel_displays_asset_fingerprint_fields() -> None:
@@ -37,3 +37,16 @@ def test_render_fingerprint_panel_displays_asset_fingerprint_fields() -> None:
     assert "Axis P3225-LV" in html
     assert "12345" in html
     assert "Firmware 10.12.3" in html
+
+
+def test_render_vendor_table_displays_vendor_column() -> None:
+    html = render_vendor_table(
+        [
+            {"asset_id": "asset-1", "ip": "203.0.113.10", "vendor": "Axis Communications"},
+            {"asset_id": "asset-2", "ip": "203.0.113.20", "vendor": "Ubiquiti Inc"},
+        ]
+    )
+
+    assert "Vendor" in html
+    assert "Axis Communications" in html
+    assert "Ubiquiti Inc" in html

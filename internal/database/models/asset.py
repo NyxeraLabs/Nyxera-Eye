@@ -29,4 +29,5 @@ class AssetFingerprintRecord:
 class AssetRecord:
     asset_id: str
     ip: str
+    vendor: str | None = None
     fingerprint: AssetFingerprintRecord = field(default_factory=AssetFingerprintRecord)

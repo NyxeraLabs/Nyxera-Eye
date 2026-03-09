@@ -19,6 +19,7 @@ def build_asset_response(record: AssetRecord) -> dict[str, object]:
     return {
         "asset_id": record.asset_id,
         "ip": record.ip,
+        "vendor": record.vendor,
         "fingerprint": {
             "favicon_hash": record.fingerprint.favicon_hash,
             "http_server": record.fingerprint.http_server,

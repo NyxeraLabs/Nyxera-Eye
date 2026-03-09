@@ -12,7 +12,14 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
+from internal.intel.vendor.detector import VendorDetectionEngine
 from internal.intel.vendor.http_headers import detect_vendor_from_http_headers
 from internal.intel.vendor.oui import OUIVendorDatabase
+from internal.intel.vendor.tls_certificates import detect_vendor_from_tls_certificate
 
-__all__ = ["OUIVendorDatabase", "detect_vendor_from_http_headers"]
+__all__ = [
+    "OUIVendorDatabase",
+    "VendorDetectionEngine",
+    "detect_vendor_from_http_headers",
+    "detect_vendor_from_tls_certificate",
+]

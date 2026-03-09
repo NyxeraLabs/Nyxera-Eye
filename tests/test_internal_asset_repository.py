@@ -27,6 +27,7 @@ def test_asset_repository_persists_fingerprint_data(tmp_path: Path) -> None:
         AssetRecord(
             asset_id="asset-1",
             ip="203.0.113.10",
+            vendor="Axis Communications",
             fingerprint=AssetFingerprintRecord(
                 favicon_hash="12345",
                 http_server="nginx/1.25.3",
@@ -42,6 +43,7 @@ def test_asset_repository_persists_fingerprint_data(tmp_path: Path) -> None:
 
     assert fetched is not None
     assert fetched.ip == "203.0.113.10"
+    assert fetched.vendor == "Axis Communications"
     assert fetched.fingerprint.favicon_hash == "12345"
     assert fetched.fingerprint.http_server == "nginx/1.25.3"
     assert fetched.fingerprint.html_metadata["generator"] == "Firmware 10.12.3"

@@ -21,6 +21,7 @@ def test_build_asset_response_includes_fingerprint_information() -> None:
         AssetRecord(
             asset_id="asset-1",
             ip="203.0.113.10",
+            vendor="Axis Communications",
             fingerprint=AssetFingerprintRecord(
                 favicon_hash="12345",
                 http_server="nginx/1.25.3",
@@ -34,6 +35,7 @@ def test_build_asset_response_includes_fingerprint_information() -> None:
 
     assert response["asset_id"] == "asset-1"
     assert response["ip"] == "203.0.113.10"
+    assert response["vendor"] == "Axis Communications"
     fingerprint = response["fingerprint"]
     assert isinstance(fingerprint, dict)
     assert fingerprint["favicon_hash"] == "12345"
