@@ -4,7 +4,7 @@
 Implement world map visualization showing both device geolocations and event geolocations, with finding selection workflow integration.
 
 ## Source Code
-- `frontend/app/components/world-map.tsx`
+- `frontend/app/components/world-map-leaflet.tsx`
 - `frontend/app/lib/data.ts`
 - `frontend/app/lib/types.ts`
 - `frontend/app/map/page.tsx`
@@ -32,7 +32,7 @@ Implement world map visualization showing both device geolocations and event geo
 
 ```mermaid
 flowchart LR
-  A[Device Locations] --> C[WorldMap Component]
+  A[Device Locations] --> C[WorldMapLeaflet Component]
   B[Event Locations] --> C
   C --> D[Dashboard Map View]
   C --> E[Map Page]

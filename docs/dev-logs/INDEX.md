@@ -24,6 +24,7 @@ This section contains detailed implementation logs for each roadmap sprint, incl
 - [Sprint 17 - Final Validation and Release Readiness](sprints/SPRINT-17.md)
 - [Sprint 18 - Frontend UX Foundation](sprints/SPRINT-18.md)
 - [Sprint 19 - Geospatial Intelligence UX](sprints/SPRINT-19.md)
+- [Sprint 20 - Interactive Leaflet Map Runtime](sprints/SPRINT-20.md)
 
 ## Supporting References
 

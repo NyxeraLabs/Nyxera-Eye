@@ -784,6 +784,28 @@ Tasks:
 
 ---
 
+# Phase 20 — Interactive Map Runtime
+
+### Sprint 20
+
+Map runtime:
+
+```
+Leaflet
+OpenStreetMap tiles
+```
+
+Tasks:
+
+```
+[x] commit: Integrate Leaflet + react-leaflet frontend map runtime
+[x] commit: Replace static map placeholder with interactive map component
+[x] commit: Add map overlay toggles for devices and events
+[x] commit: Add popup details for devices/events markers
+```
+
+---
+
 # Storage Economics
 
 For **100,000 devices**
