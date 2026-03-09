@@ -691,6 +691,13 @@ GPU utilization
 storage growth
 ```
 
+Tasks:
+
+```
+[x] commit: Prometheus metrics exporter for core platform KPIs
+[x] commit: OpenTelemetry-style span context utility
+```
+
 ---
 
 # Phase 17 — Final Release

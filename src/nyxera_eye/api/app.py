@@ -16,6 +16,7 @@ import os
 
 try:
     from fastapi import Depends, FastAPI, Header, HTTPException
+    from fastapi.responses import PlainTextResponse
 except ImportError:  # pragma: no cover
     FastAPI = None
 
@@ -27,6 +28,7 @@ from nyxera_eye.api.command_center import (
     build_mining_telemetry,
     build_vulnerability_distribution,
 )
+from nyxera_eye.observability import PlatformMetrics, export_prometheus
 from nyxera_eye.security import APITokenStore, RateLimiter, TokenRecord, role_allows
 
 query_service = OpenSearchQueryService()
@@ -125,3 +127,21 @@ if FastAPI is not None:
             probe_latency_ms=probe_latency_ms,
             active_discoveries=active_discoveries,
         )
+
+    @app.get("/observability/prometheus", response_class=PlainTextResponse)
+    async def prometheus_metrics(
+        queue_depth: int = 0,
+        mining_throughput: float = 0.0,
+        probe_success_rate: float = 0.0,
+        gpu_utilization: float = 0.0,
+        storage_growth_gb: float = 0.0,
+        _: TokenRecord = Depends(_require_admin),
+    ) -> str:
+        metrics = PlatformMetrics(
+            queue_depth=queue_depth,
+            mining_throughput=mining_throughput,
+            probe_success_rate=probe_success_rate,
+            gpu_utilization=gpu_utilization,
+            storage_growth_gb=storage_growth_gb,
+        )
+        return export_prometheus(metrics)
