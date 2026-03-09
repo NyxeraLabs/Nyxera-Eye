@@ -1,169 +1,106 @@
 <!--
 Copyright (c) 2026 NyxeraLabs
-Author: José María Micoli
+Author: Jose Maria Micoli
 Licensed under BSL 1.1
-Change Date: 2033-03-09 → Apache-2.0
+Change Date: 2033-02-17 -> Apache-2.0
 -->
 
 # Nyxera Eye
 
-**Nyxera Eye** is an **IoT and ICS Attack Surface Intelligence Platform** designed for **security research and authorized red-team operations**.
+Nyxera Eye is a continuous asset intelligence platform for authorized IoT, ICS, and network exposure analysis.
 
-The platform discovers, fingerprints, and analyzes exposed internet infrastructure to help security teams understand **real-world exposure risks**.
+It combines discovery-style scanning, service metadata, web fingerprinting, vendor and firmware hints, vulnerability context, and operator-facing investigation workflows in one platform.
 
-Nyxera Eye integrates global OSINT intelligence, device fingerprinting, vulnerability intelligence, and visualization into a single operational platform.
+## Current Platform Capabilities
 
----
+- Accumulating scan runtime with stable device identity and finding history
+- Searchable device registry with severity, country, vendor, and text filters
+- Searchable findings registry with severity, status, and device filters
+- Device investigation view with services, fingerprint metadata, linked findings, and recent events
+- Dashboard charts for findings severity, status, vendor distribution, port distribution, country coverage, and scan growth
+- World map visualization for assets and events
+- API token auth, RBAC, rate limiting, and audit logging
+- Python backend plus Next.js/TypeScript operator UI
 
-# Core Capabilities
+## Main UI Surfaces
 
-• Global exposure discovery
-• IoT and ICS fingerprinting
-• Infrastructure clustering and tracking
-• Vulnerability intelligence correlation
-• Real-time exposure monitoring
-• Attack surface visualization
-• Threat-informed adversary emulation (authorized mode)
+- `/` dashboard
+- `/devices` full device registry
+- `/devices/{deviceId}` device investigation
+- `/findings` findings registry and action panel
+- `/map` world map
+- `/events` event stream
+- `/settings` runtime settings
+- `/audit` audit ledger
 
----
+## Quick Start
 
-# Operating Modes
+```bash
+cd /home/xoce/Workspace/Nyxera-Eye
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install pytest fastapi httpx arq uvicorn
+cd frontend && npm ci && cd ..
+```
 
-Nyxera Eye includes two safety modes.
+Run the key local validation commands:
 
-### Passive Intelligence Mode (default)
+```bash
+./.venv/bin/python scripts/lint_repo.py
+./.venv/bin/pytest tests/test_ops_runtime.py -q
+docker compose config -q
+cd frontend && npm run typecheck
+```
 
-Only non-intrusive OSINT collection:
+## Active Runtime Endpoints
 
-* Shodan
-* Censys
-* ZoomEye
-* Public banner data
-* TLS fingerprinting
-* Metadata correlation
+Core live frontend API routes:
 
-No authentication attempts or exploitation occurs.
+- `GET /frontend/ops-feed`
+- `POST /frontend/scan`
+- `POST /frontend/scan/start`
+- `POST /frontend/scan/stop`
+- `GET /frontend/scan/status`
+- `GET /frontend/devices`
+- `GET /frontend/devices/{device_id}`
+- `GET /frontend/findings`
+- `GET /frontend/findings/{finding_id}`
+- `POST /frontend/findings/{finding_id}/action`
+- `GET /frontend/findings/{finding_id}/export`
 
-### Authorized Scope Mode
+## Repository Notes
 
-Used only during **approved security assessments**.
+- Active backend runtime currently lives under `src/nyxera_eye/api`.
+- Active web runtime currently lives under `frontend/app`.
+- Architecture target documentation still exists under `docs/ARCHITECTURE.md` and `docs/ARCHITECTURE_MIGRATION.md`.
+- Generated frontend artifacts such as `frontend/.next/` and dependencies in `frontend/node_modules/` are ignored by git.
 
-Allows deeper enumeration inside a **defined CIDR or domain scope**.
+## Documentation
 
-All operator activity is logged.
+- [docs/manuals/INDEX.md](docs/manuals/INDEX.md)
+- [docs/RUNBOOK.md](docs/RUNBOOK.md)
+- [docs/ROADMAP.md](docs/ROADMAP.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/ARCHITECTURE_MIGRATION.md](docs/ARCHITECTURE_MIGRATION.md)
+- [docs/COMPLIANCE.md](docs/COMPLIANCE.md)
+- [docs/ETHICS.md](docs/ETHICS.md)
+- [docs/INFRA.md](docs/INFRA.md)
 
----
+## Safety
 
-# System Architecture
+Nyxera Eye is for authorized security testing and defensive research only.
 
-Nyxera Eye uses a distributed architecture designed to scale to millions of assets.
+- No brute force
+- No exploitation
+- No intrusive scanning outside explicit approved scope
 
-Data pipeline:
+Read:
 
-Data Sources
-→ Collectors
-→ Redis Streams
-→ Processing Workers
-→ Device Intelligence Schema
-→ MongoDB + OpenSearch
-→ FastAPI API Layer
-→ Operator Interfaces (TUI + Web)
+- [docs/COMPLIANCE.md](docs/COMPLIANCE.md)
+- [docs/ETHICS.md](docs/ETHICS.md)
+- [docs/SECURITY_DISCLOSURE.md](docs/SECURITY_DISCLOSURE.md)
 
-Binary assets such as snapshots are stored in **MinIO S3**.
+## License
 
----
-
-# Technology Stack
-
-Backend
-
-Python 3.12
-FastAPI
-Redis Streams
-MongoDB
-OpenSearch
-
-Infrastructure
-
-Docker
-MinIO S3
-Prometheus
-Grafana
-
-Interfaces
-
-Textual (Terminal UI)
-React (Web Dashboard)
-
----
-
-# Repository Structure
-
-nyxera-eye/
-
-core/
-collectors/
-fingerprinting/
-probing/
-vulnintel/
-ai/
-api/
-tui/
-frontend/
-automation/
-storage/
-tests/
-
-docs/
-docker/
-infra/
-config/
-
----
-
-# Legal and Ethical Use
-
-Nyxera Eye is designed **strictly for security research and authorized security testing**.
-
-Prohibited uses include:
-
-• Unauthorized access
-• Privacy violations
-• Illegal surveillance
-• Exploitation of systems without permission
-
-The platform includes:
-
-• Passive Intelligence Mode
-• Authorized Scope Mode
-• Audit logging
-• Opt-out registry
-• Responsible disclosure policy
-
----
-
-# Responsible Disclosure
-
-If Nyxera Eye identifies exposed infrastructure that may present security risks, findings should be reported responsibly following industry disclosure standards.
-
----
-
-# License
-
-Business Source License 1.1 (BSL)
-
-Additional Use Grant allows use for:
-
-• security research
-• defensive security teams
-• authorized red-team engagements
-
-Commercial use restrictions may apply.
-
----
-
-# Status
-
-Early development (R&D stage).
-
-Nyxera Eye is being built by **Nyxera Labs**.
+Business Source License 1.1. See [LICENSE](LICENSE).
