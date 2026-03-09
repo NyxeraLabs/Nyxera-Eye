@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+*/
+
 import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_URL = process.env.NYXERA_BACKEND_URL || "http://127.0.0.1:18080";

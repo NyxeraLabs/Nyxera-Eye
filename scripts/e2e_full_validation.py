@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 NyxeraLabs
+# Author: Jose Maria Micoli
+# Licensed under BSL 1.1
+# Change Date: 2033-02-17 -> Apache-2.0
+
 """Comprehensive local E2E validation across implemented roadmap phases."""
 
 from __future__ import annotations

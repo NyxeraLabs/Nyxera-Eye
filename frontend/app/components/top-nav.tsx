@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2026 NyxeraLabs
+Author: Jose Maria Micoli
+Licensed under BSL 1.1
+Change Date: 2033-02-17 -> Apache-2.0
+*/
+
 "use client";
 
 import Image from "next/image";
@@ -8,6 +15,7 @@ import { useAuth } from "./auth-context";
 
 const links = [
   { href: "/", label: "Dashboard" },
+  { href: "/devices", label: "Devices" },
   { href: "/map", label: "World Map" },
   { href: "/events", label: "Events" },
   { href: "/findings", label: "Findings" },
@@ -40,7 +48,7 @@ export function TopNav() {
         <div className="flex flex-col gap-3 xl:items-end">
           <nav className="flex flex-wrap items-center gap-2">
             {links.map((link) => {
-              const active = pathname === link.href;
+              const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
                 <Link
                   key={link.href}

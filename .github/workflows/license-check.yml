@@ -41,7 +41,7 @@ jobs:
           fi
 
           MISSING="$(printf '%s\n' "${FILES}" \
-            | grep -vE '(^|/)(node_modules|vendor|dist|build)/' \
+            | grep -vE '(^|/)(node_modules|vendor|dist|build)/|frontend/next-env.d.ts$' \
             | xargs grep -L "Copyright (c) 2026 NyxeraLabs" || true)"
 
           if [ -n "${MISSING}" ]; then

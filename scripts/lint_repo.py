@@ -20,8 +20,9 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE_DIRS = ("internal", "web", "tests", "scripts")
-TEXT_SUFFIXES = {".py", ".sh", ".md", ".yml", ".yaml"}
+SOURCE_DIRS = ("src", "internal", "web", "frontend", "tests", "scripts", ".github")
+TEXT_SUFFIXES = {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".tsx", ".js", ".mjs", ".d.ts"}
+IGNORED_PARTS = {"__pycache__", "node_modules", ".next", "dist", "build"}
 
 
 def iter_files() -> list[Path]:
@@ -31,7 +32,7 @@ def iter_files() -> list[Path]:
         if not base.exists():
             continue
         for path in base.rglob("*"):
-            if path.is_file() and "__pycache__" not in path.parts:
+            if path.is_file() and not any(part in IGNORED_PARTS for part in path.parts):
                 files.append(path)
     return sorted(files)
 
