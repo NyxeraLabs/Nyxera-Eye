@@ -17,6 +17,7 @@ name: Release Validation
 on:
   push:
     branches:
+      - QA
       - qa
       - main
   workflow_dispatch:

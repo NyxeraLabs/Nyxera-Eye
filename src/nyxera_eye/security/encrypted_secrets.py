@@ -13,6 +13,7 @@
 # - Sell derived competing products
 
 import base64
+import binascii
 import hashlib
 import hmac
 import json
@@ -34,15 +35,21 @@ def encrypt_secret(plaintext: str, key: str) -> str:
 
 def decrypt_secret(payload: str, key: str) -> str:
     key_bytes = _derive_key(key)
-    parsed = json.loads(payload)
-    nonce = base64.b64decode(parsed["nonce"])
-    ciphertext = base64.b64decode(parsed["ciphertext"])
-    provided_mac = base64.b64decode(parsed["mac"])
+    try:
+        parsed = json.loads(payload)
+        nonce = base64.b64decode(parsed["nonce"])
+        ciphertext = base64.b64decode(parsed["ciphertext"])
+        provided_mac = base64.b64decode(parsed["mac"])
+    except (json.JSONDecodeError, KeyError, TypeError, binascii.Error) as exc:
+        raise ValueError("invalid secret payload integrity check") from exc
     expected_mac = hmac.new(key_bytes, nonce + ciphertext, hashlib.sha256).digest()
     if not hmac.compare_digest(provided_mac, expected_mac):
         raise ValueError("invalid secret payload integrity check")
     plaintext = _xor_stream(ciphertext, key_bytes, nonce)
-    return plaintext.decode("utf-8")
+    try:
+        return plaintext.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValueError("invalid secret payload integrity check") from exc
 
 
 def _derive_key(key: str) -> bytes:
