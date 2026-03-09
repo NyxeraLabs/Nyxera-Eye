@@ -36,10 +36,34 @@ class AssetVulnerabilityRecord:
 
 
 @dataclass(slots=True)
+class AssetServiceRecord:
+    port: int
+    protocol: str
+    service: str
+    version: str
+    banner: str | None = None
+
+
+@dataclass(slots=True)
+class AssetScanHistoryRecord:
+    scanned_at: float
+    configuration_changed: bool
+    service_count: int
+
+
+@dataclass(slots=True)
 class AssetRecord:
     asset_id: str
     ip: str
     vendor: str | None = None
     risk_score: float | None = None
+    scan_count: int = 0
+    first_seen: float | None = None
+    last_seen: float | None = None
+    last_updated: float | None = None
+    configuration_hash: str | None = None
+    configuration_changed: bool = False
     fingerprint: AssetFingerprintRecord = field(default_factory=AssetFingerprintRecord)
+    services: list[AssetServiceRecord] = field(default_factory=list)
     vulnerabilities: list[AssetVulnerabilityRecord] = field(default_factory=list)
+    scan_history: list[AssetScanHistoryRecord] = field(default_factory=list)

@@ -13,7 +13,8 @@
 # ✘ Sell derived competing products
 
 from web.assets.fingerprint_panel import render_fingerprint_panel
+from web.assets.update_panel import render_asset_update_panel
 from web.assets.vulnerability_badges import render_vulnerability_badges
 from web.assets.vendor_table import render_vendor_table
 
-__all__ = ["render_fingerprint_panel", "render_vendor_table", "render_vulnerability_badges"]
+__all__ = ["render_fingerprint_panel", "render_vendor_table", "render_vulnerability_badges", "render_asset_update_panel"]

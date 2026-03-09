@@ -12,7 +12,7 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from web.assets import render_fingerprint_panel, render_vendor_table, render_vulnerability_badges
+from web.assets import render_asset_update_panel, render_fingerprint_panel, render_vendor_table, render_vulnerability_badges
 
 
 def test_render_fingerprint_panel_displays_asset_fingerprint_fields() -> None:
@@ -64,3 +64,19 @@ def test_render_vulnerability_badges_displays_vulnerability_entries() -> None:
 
     assert "CVE-2026-1000" in html
     assert "critical" in html
+
+
+def test_render_asset_update_panel_displays_update_timestamps() -> None:
+    html = render_asset_update_panel(
+        {
+            "asset_id": "asset-1",
+            "first_seen": 1700000000.0,
+            "last_seen": 1700001000.0,
+            "last_updated": 1700001000.0,
+            "scan_count": 2,
+            "configuration_changed": True,
+        }
+    )
+
+    assert "Last Updated: 1700001000.0" in html
+    assert "Scan Count: 2" in html
