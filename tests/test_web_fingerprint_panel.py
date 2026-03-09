@@ -12,7 +12,7 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from web.assets import render_fingerprint_panel, render_vendor_table
+from web.assets import render_fingerprint_panel, render_vendor_table, render_vulnerability_badges
 
 
 def test_render_fingerprint_panel_displays_asset_fingerprint_fields() -> None:
@@ -50,3 +50,17 @@ def test_render_vendor_table_displays_vendor_column() -> None:
     assert "Vendor" in html
     assert "Axis Communications" in html
     assert "Ubiquiti Inc" in html
+
+
+def test_render_vulnerability_badges_displays_vulnerability_entries() -> None:
+    html = render_vulnerability_badges(
+        {
+            "vulnerabilities": [
+                {"cve_id": "CVE-2026-1000", "severity": "high"},
+                {"cve_id": "CVE-2026-2000", "severity": "critical"},
+            ]
+        }
+    )
+
+    assert "CVE-2026-1000" in html
+    assert "critical" in html

@@ -1097,13 +1097,13 @@ Link detected versions to vulnerability intelligence.
 
 ### Tasks
 
-* [ ] Integrate public vulnerability database
-* [ ] Build vulnerability lookup module
-* [ ] Match detected service versions
-* [ ] Implement risk scoring system
-* [ ] Store vulnerability metadata
-* [ ] Add vulnerability badges to UI
-* [ ] Add vulnerability info to API
+* [x] Integrate public vulnerability database
+* [x] Build vulnerability lookup module
+* [x] Match detected service versions
+* [x] Implement risk scoring system
+* [x] Store vulnerability metadata
+* [x] Add vulnerability badges to UI
+* [x] Add vulnerability info to API
 
 ### Commit Plan
 
