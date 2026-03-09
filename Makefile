@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 
-.PHONY: help install install-poetry install-venv test compile infra-check e2e qa up down run-api docs
+.PHONY: help install install-poetry install-venv test compile infra-check e2e qa up down run-api frontend-install frontend-dev frontend-build deploy docs
 
 help:
 	@echo "Nyxera Eye Make Targets"
@@ -15,6 +15,10 @@ help:
 	@echo "  make up              # Start infrastructure stack"
 	@echo "  make down            # Stop infrastructure stack"
 	@echo "  make run-api         # Run FastAPI app locally"
+	@echo "  make frontend-install# Install frontend dependencies"
+	@echo "  make frontend-dev    # Run Next.js frontend dev server"
+	@echo "  make frontend-build  # Build frontend production bundle"
+	@echo "  make deploy          # Start infra + API and print frontend instructions"
 	@echo "  make docs            # Print docs entry points"
 
 install:
@@ -57,6 +61,20 @@ down:
 
 run-api:
 	PYTHONPATH=src uvicorn nyxera_eye.api.app:app --host 127.0.0.1 --port 8000
+
+frontend-install:
+	cd frontend && npm install
+
+frontend-dev:
+	cd frontend && npm run dev
+
+frontend-build:
+	cd frontend && npm run build
+
+deploy: up
+	@echo "Infrastructure started."
+	@echo "Run API: make run-api"
+	@echo "Run frontend: make frontend-dev"
 
 docs:
 	@echo "Manuals index: docs/manuals/INDEX.md"

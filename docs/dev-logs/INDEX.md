@@ -22,6 +22,8 @@ This section contains detailed implementation logs for each roadmap sprint, incl
 - [Sprint 15 - Security Hardening](sprints/SPRINT-15.md)
 - [Sprint 16 - Observability](sprints/SPRINT-16.md)
 - [Sprint 17 - Final Validation and Release Readiness](sprints/SPRINT-17.md)
+- [Sprint 18 - Frontend UX Foundation](sprints/SPRINT-18.md)
+- [Sprint 19 - Geospatial Intelligence UX](sprints/SPRINT-19.md)
 
 ## Supporting References
 

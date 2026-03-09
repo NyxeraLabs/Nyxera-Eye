@@ -731,6 +731,59 @@ Nyxera Eye v1.0
 
 ---
 
+# Phase 18 — Frontend UX Foundation
+
+### Sprint 18
+
+Frontend stack:
+
+```
+Next.js
+Tailwind CSS
+```
+
+Tasks:
+
+```
+[x] commit: Initialize Next.js frontend structure in `frontend/`
+[x] commit: Implement shared top navigation across pages
+[x] commit: Implement global footer finding action bar
+[x] commit: Implement multi-page routes (dashboard, map, events, findings)
+```
+
+UX requirements:
+
+```
+mobile responsive layout
+clear navigation hierarchy
+finding context visible at all times
+```
+
+---
+
+# Phase 19 — Geospatial Intelligence UX
+
+### Sprint 19
+
+Map requirements:
+
+```
+global world map view
+device location overlays
+event location overlays
+```
+
+Tasks:
+
+```
+[x] commit: Implement world map component with geolocation plotting
+[x] commit: Render device and event markers with legend
+[x] commit: Add events page and finding selection integration
+[x] commit: Add findings page with footer action workflow
+```
+
+---
+
 # Storage Economics
 
 For **100,000 devices**
