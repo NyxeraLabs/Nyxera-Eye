@@ -14,5 +14,11 @@
 
 from internal.api.handlers.assets import build_asset_response
 from internal.api.handlers.coverage import build_coverage_response
+from internal.api.handlers.investigation import build_asset_detail_response, build_investigate_link
 
-__all__ = ["build_asset_response", "build_coverage_response"]
+__all__ = [
+    "build_asset_response",
+    "build_coverage_response",
+    "build_asset_detail_response",
+    "build_investigate_link",
+]
