@@ -806,6 +806,38 @@ Tasks:
 
 ---
 
+# Phase 21 — Infrastructure Security Hardening
+
+### Sprint 21
+
+Ingress and exposure model:
+
+```
+Nginx reverse proxy
+HTTPS-only web ingress
+non-default externally exposed ports
+internal-only backend services
+```
+
+Tasks:
+
+```
+[x] commit: Replace direct service exposure with Nginx TLS ingress layer
+[x] commit: Enforce HTTPS-only access to observability/storage/search web surfaces
+[x] commit: Move backend datastore services to internal-only docker network
+[x] commit: Apply container hardening defaults (no-new-privileges, readonly proxy fs)
+```
+
+Security objective:
+
+```
+reduce attack surface
+minimize direct service exposure
+centralize transport security controls
+```
+
+---
+
 # Storage Economics
 
 For **100,000 devices**
