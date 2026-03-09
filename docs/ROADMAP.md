@@ -391,9 +391,9 @@ EPSS
 Tasks:
 
 ```
-[ ] commit: CVE mirror database
-[ ] commit: vendor firmware mapping
-[ ] commit: exploit availability detection
+[x] commit: CVE mirror database
+[x] commit: vendor firmware mapping
+[x] commit: exploit availability detection
 ```
 
 Risk score:
