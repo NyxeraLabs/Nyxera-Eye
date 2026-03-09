@@ -33,6 +33,14 @@ docker compose config -q
 ## 4. Local Validation
 
 ```bash
+make compile
+make infra-check
+make e2e
+```
+
+Equivalent raw commands:
+
+```bash
 python -m compileall -q src tests scripts
 PYTHONPATH=src python scripts/e2e_full_validation.py
 ```

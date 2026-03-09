@@ -16,21 +16,13 @@ Run Nyxera Eye locally and execute the full deterministic E2E validation flow.
 cd /home/xoce/Workspace/Nyxera-Eye
 git checkout dev
 git pull origin dev
+make install
+make qa
 ```
 
-Install dependencies (Poetry path):
-
-```bash
-poetry install --no-interaction
-```
-
-Run core checks:
-
-```bash
-python -m compileall -q src tests scripts
-docker compose config -q
-PYTHONPATH=src python scripts/e2e_full_validation.py
-```
+Alternative explicit commands are available in:
+- [Installation Guide](INSTALLATION.md)
+- [Makefile Operations Guide](MAKEFILE_OPERATIONS.md)
 
 Expected final output:
 
