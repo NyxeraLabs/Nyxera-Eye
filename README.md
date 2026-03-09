@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2026 NyxeraLabs
+Author: José María Micoli
+Licensed under BSL 1.1
+Change Date: 2033-03-09 → Apache-2.0
+-->
+
 # Nyxera Eye
 
 **Nyxera Eye** is an **IoT and ICS Attack Surface Intelligence Platform** designed for **security research and authorized red-team operations**.
