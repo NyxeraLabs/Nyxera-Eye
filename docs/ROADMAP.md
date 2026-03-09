@@ -317,15 +317,15 @@ Tasks:
 Capabilities:
 
 ```
-[ ] commit: MurmurHash3 favicon fingerprint miner
-[ ] commit: JA3 TLS fingerprinting
-[ ] commit: JARM infrastructure fingerprinting
+[x] commit: MurmurHash3 favicon fingerprint miner
+[x] commit: JA3 TLS fingerprinting
+[x] commit: JARM infrastructure fingerprinting
 ```
 
 Clustering logic:
 
 ```
-[ ] commit: SSL certificate serial correlation
+[x] commit: SSL certificate serial correlation
 ```
 
 Purpose:
