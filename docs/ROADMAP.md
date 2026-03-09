@@ -1028,7 +1028,7 @@ Extract device model and firmware hints from discovered services.
 * [x] Implement favicon hashing
 * [x] Detect device model hints
 * [x] Detect firmware version hints
-* [ ] Store fingerprint data in database
+* [x] Store fingerprint data in database
 * [ ] Add fingerprint information to asset API
 * [ ] Display fingerprint data in UI
 
