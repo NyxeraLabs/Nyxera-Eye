@@ -17,11 +17,12 @@ services:
     image: mongo:7.0
     container_name: nyxera-mongodb
     restart: unless-stopped
-    command: ["mongod", "--bind_ip_all"]
+    command: ["mongod", "--config", "/etc/mongod.conf"]
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping').ok"]
       interval: 20s
