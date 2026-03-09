@@ -518,8 +518,8 @@ Focus on **non-intrusive capture**.
 Tasks:
 
 ```
-[ ] commit: snapshot capture system
-[ ] commit: thumbnail storage in MinIO
+[x] commit: snapshot capture system
+[x] commit: thumbnail storage in MinIO
 ```
 
 Optional (Authorized Scope Mode only):
