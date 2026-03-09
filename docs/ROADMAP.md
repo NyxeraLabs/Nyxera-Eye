@@ -127,15 +127,15 @@ Purpose: ensure platform operates within acceptable legal and ethical boundaries
 Tasks:
 
 ```
-[ ] commit: Create COMPLIANCE.md defining allowed use cases
-[ ] commit: Create ETHICS.md research ethics policy
-[ ] commit: Create SECURITY_DISCLOSURE.md for responsible disclosure
-[ ] commit: Implement Passive Mode (default runtime mode)
-[ ] commit: Implement Authorized Scope Mode with CIDR allowlist
-[ ] commit: Implement Target Blacklist system
-[ ] commit: Implement Opt-Out registry for asset owners
-[ ] commit: Add audit logging subsystem
-[ ] commit: Add legal banner to UI
+[x] commit: Create COMPLIANCE.md defining allowed use cases
+[x] commit: Create ETHICS.md research ethics policy
+[x] commit: Create SECURITY_DISCLOSURE.md for responsible disclosure
+[x] commit: Implement Passive Mode (default runtime mode)
+[x] commit: Implement Authorized Scope Mode with CIDR allowlist
+[x] commit: Implement Target Blacklist system
+[x] commit: Implement Opt-Out registry for asset owners
+[x] commit: Add audit logging subsystem
+[x] commit: Add legal banner to UI
 ```
 
 Policy requirements:
@@ -153,16 +153,16 @@ Policy requirements:
 Tasks:
 
 ```
-[ ] commit: Initialize Git repository
-[ ] commit: Setup Python 3.12 Poetry environment
-[ ] commit: Add LICENSE.md (BSL 1.1)
-[ ] commit: Create ROADMAP.md
+[x] commit: Initialize Git repository
+[x] commit: Setup Python 3.12 Poetry environment
+[x] commit: Add LICENSE.md (BSL 1.1)
+[x] commit: Create ROADMAP.md
 ```
 
 Infrastructure deployment:
 
 ```
-[ ] commit: docker-compose.yml
+[x] commit: docker-compose.yml
         MongoDB
         OpenSearch
         Redis
@@ -174,8 +174,8 @@ Infrastructure deployment:
 Storage configuration:
 
 ```
-[ ] commit: Configure MongoDB WiredTiger compression
-[ ] commit: Configure MinIO bucket structure
+[x] commit: Configure MongoDB WiredTiger compression
+[x] commit: Configure MinIO bucket structure
 ```
 
 QA:
@@ -200,21 +200,21 @@ Data sources:
 Tasks:
 
 ```
-[ ] commit: Async Shodan collector
-[ ] commit: Async Censys collector
-[ ] commit: Async ZoomEye collector
+[x] commit: Async Shodan collector
+[x] commit: Async Censys collector
+[x] commit: Async ZoomEye collector
 ```
 
 Queue integration:
 
 ```
-[ ] commit: Redis task queue (Arq)
+[x] commit: Redis task queue (Arq)
 ```
 
 Mining management:
 
 ```
-[ ] commit: Dork Manager
+[x] commit: Dork Manager
        search categories
        rate limiting
        query rotation
@@ -223,7 +223,7 @@ Mining management:
 Testing:
 
 ```
-[ ] commit: Mock API responses
+[x] commit: Mock API responses
 ```
 
 Documentation:
