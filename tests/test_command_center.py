@@ -13,6 +13,7 @@
 # ✘ Sell derived competing products
 
 from nyxera_eye.api.command_center import (
+    build_ops_feed,
     build_global_exposure_map_points,
     build_mining_telemetry,
     build_vulnerability_distribution,
@@ -55,3 +56,12 @@ def test_mining_telemetry_payload() -> None:
     assert telemetry["scan_throughput"] == 123.46
     assert telemetry["probe_latency_ms"] == 87.65
     assert telemetry["active_discoveries"] == 42
+
+
+def test_ops_feed_shape() -> None:
+    feed = build_ops_feed()
+    assert "generated_at" in feed
+    assert isinstance(feed["devices"], list)
+    assert isinstance(feed["events"], list)
+    assert isinstance(feed["findings"], list)
+    assert isinstance(feed["metrics"], dict)
