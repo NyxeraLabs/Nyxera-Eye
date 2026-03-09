@@ -27,6 +27,9 @@ class Fingerprints:
     favicon_hash: str | None = None
     ja3: str | None = None
     jarm: str | None = None
+    http_server: str | None = None
+    html_title: str | None = None
+    html_metadata: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(slots=True)

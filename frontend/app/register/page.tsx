@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -27,10 +28,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="mx-auto mt-20 w-full max-w-md rounded-2xl border border-cyan-300/25 bg-black/45 p-6 shadow-2xl">
-      <p className="font-mono text-xs uppercase tracking-[0.26em] text-cyan-300">Nyxera Identity Provisioning</p>
-      <h1 className="mt-2 text-3xl font-bold text-cyan-100">Register Operator</h1>
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+    <section className="mx-auto mt-10 w-full max-w-2xl rounded-3xl border border-cyan-300/25 bg-black/45 p-6 shadow-2xl sm:mt-16 sm:p-10">
+      <div className="flex flex-col items-center text-center">
+        <Image
+          src="/nyxera-eye-logo.png"
+          alt="Nyxera Eye"
+          width={720}
+          height={280}
+          priority
+          className="h-auto w-full max-w-xl"
+        />
+        <p className="mt-2 font-mono text-xs uppercase tracking-[0.26em] text-cyan-300">Nyxera Identity Provisioning</p>
+        <h1 className="mt-2 text-3xl font-bold text-cyan-100 sm:text-4xl">Register Operator</h1>
+      </div>
+      <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-md space-y-4">
         <input
           className="w-full rounded-md border border-white/20 bg-slate-950/80 px-3 py-2 text-sm"
           placeholder="Username"
@@ -57,8 +68,8 @@ export default function RegisterPage() {
           Create Account
         </button>
       </form>
-      {status ? <p className="mt-3 text-xs text-cyan-300">{status}</p> : null}
-      <p className="mt-4 text-xs text-slate-300">
+      {status ? <p className="mt-3 text-center text-xs text-cyan-300">{status}</p> : null}
+      <p className="mt-4 text-center text-xs text-slate-300">
         Already registered?{" "}
         <Link href="/login" className="text-cyan-300 underline">
           Login

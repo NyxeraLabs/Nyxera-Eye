@@ -14,6 +14,13 @@
 
 from nyxera_eye.fingerprinting.ja3 import build_ja3_string, ja3_hash
 from nyxera_eye.fingerprinting.jarm import jarm_fingerprint
+from nyxera_eye.fingerprinting.device_fingerprint import (
+    build_web_fingerprint,
+    detect_device_model_hint,
+    detect_firmware_version_hint,
+    parse_html_title_and_metadata,
+    parse_http_server_header,
+)
 from nyxera_eye.fingerprinting.murmurhash3 import (
     favicon_mmh3_from_base64,
     favicon_mmh3_from_bytes,
@@ -24,6 +31,11 @@ __all__ = [
     "build_ja3_string",
     "ja3_hash",
     "jarm_fingerprint",
+    "build_web_fingerprint",
+    "detect_device_model_hint",
+    "detect_firmware_version_hint",
+    "parse_html_title_and_metadata",
+    "parse_http_server_header",
     "favicon_mmh3_from_base64",
     "favicon_mmh3_from_bytes",
     "murmurhash3_x86_32",

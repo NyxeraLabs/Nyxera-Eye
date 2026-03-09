@@ -59,6 +59,13 @@ export default function DashboardPage() {
       .join(" ");
   }, [feed]);
 
+  const fingerprintAssets = useMemo(() => {
+    if (!feed) {
+      return [];
+    }
+    return feed.devices.slice(0, 6);
+  }, [feed]);
+
   const handleScan = async () => {
     setScanStatus("Running single scan...");
     const ok = await runScan(128);
@@ -216,6 +223,68 @@ export default function DashboardPage() {
               </div>
               <p className="mt-2 text-xs text-slate-400">Trend line shows findings count progression per scan run.</p>
             </article>
+          </section>
+
+          <section className="rounded-2xl border border-white/10 bg-black/35 p-5">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-100">Fingerprint Intelligence</h2>
+                <p className="mt-1 text-sm text-slate-400">HTTP banners, HTML metadata, favicon hashes, and model or firmware hints from the current asset feed.</p>
+              </div>
+              <p className="text-xs uppercase tracking-[0.12em] text-cyan-300">{fingerprintAssets.length} assets shown</p>
+            </div>
+            <div className="mt-4 grid gap-4 xl:grid-cols-2">
+              {fingerprintAssets.map((device) => (
+                <article key={device.id} className="rounded-xl border border-emerald-300/10 bg-slate-950/70 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-emerald-100">{device.name}</p>
+                      <p className="text-xs text-slate-400">{device.ip} · {device.country}</p>
+                    </div>
+                    <span className="rounded-full border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-slate-300">
+                      {device.severity}
+                    </span>
+                  </div>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-300">HTTP Server</p>
+                      <p className="mt-1 text-sm text-slate-200">{device.fingerprints?.httpServer || "-"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-300">HTML Title</p>
+                      <p className="mt-1 text-sm text-slate-200">{device.fingerprints?.htmlTitle || "-"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-300">Model Hint</p>
+                      <p className="mt-1 text-sm text-slate-200">{device.iotMetadata?.model || "-"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-300">Firmware Hint</p>
+                      <p className="mt-1 text-sm text-slate-200">{device.iotMetadata?.firmware || "-"}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {device.services.map((service) => (
+                      <span key={`${device.id}-${service.port}`} className="rounded-full border border-emerald-300/15 bg-emerald-300/5 px-2 py-1 text-[11px] text-emerald-200">
+                        {service.service}/{service.port}
+                      </span>
+                    ))}
+                    {device.fingerprints?.faviconHash ? (
+                      <span className="rounded-full border border-cyan-300/15 bg-cyan-300/5 px-2 py-1 font-mono text-[11px] text-cyan-200">
+                        favicon {device.fingerprints.faviconHash}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {Object.entries(device.fingerprints?.htmlMetadata || {}).slice(0, 2).map(([key, value]) => (
+                      <span key={`${device.id}-${key}`} className="rounded-md border border-white/10 px-2 py-1 text-[11px] text-slate-300">
+                        {key}: {value}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
           </section>
         </>
       )}

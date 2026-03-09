@@ -26,3 +26,6 @@ def test_ops_runtime_run_scan_returns_snapshot() -> None:
     assert snapshot["metrics"]["scan_runs"] == 2
     assert len(snapshot["devices"]) == 8
     assert len(snapshot["metrics"]["scan_history"]) == 2
+    assert snapshot["devices"][0]["fingerprints"]["favicon_hash"] is not None
+    assert snapshot["devices"][0]["fingerprints"]["html_title"]
+    assert snapshot["devices"][0]["iot_metadata"]["model"]

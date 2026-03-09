@@ -42,6 +42,9 @@ def migrate_legacy_record_to_v1(raw: dict) -> dict:
             "favicon_hash": src.get("favicon_hash"),
             "ja3": src.get("ja3"),
             "jarm": src.get("jarm"),
+            "http_server": src.get("http_server"),
+            "html_title": src.get("html_title"),
+            "html_metadata": src.get("html_metadata", {}),
         },
         "iot_metadata": {
             "vendor": src.get("vendor"),

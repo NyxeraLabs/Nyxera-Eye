@@ -19,6 +19,8 @@ from random import Random
 from threading import Event, Lock, Thread
 from time import sleep
 
+from nyxera_eye.fingerprinting import build_web_fingerprint
+
 
 _COUNTRIES = [
     ("AR", -31.42, -64.19),
@@ -32,6 +34,71 @@ _COUNTRIES = [
 ]
 
 _SEVERITIES = ["critical", "high", "medium", "low"]
+_WEB_PROFILES = [
+    {
+        "server": "nginx/1.25.3",
+        "html": """
+        <html>
+          <head>
+            <title>Axis P3225-LV Camera</title>
+            <meta name="generator" content="Firmware 10.12.3">
+            <meta name="description" content="Axis P3225-LV video stream gateway">
+          </head>
+        </html>
+        """,
+        "favicon": b"axis-p3225-lv",
+        "service": "https",
+        "protocol": "tcp",
+        "port": 443,
+    },
+    {
+        "server": "Boa/0.94.14rc21",
+        "html": """
+        <html>
+          <head>
+            <title>Moxa NPort 5110A</title>
+            <meta name="generator" content="Firmware 3.11">
+            <meta name="description" content="Moxa serial device server">
+          </head>
+        </html>
+        """,
+        "favicon": b"moxa-nport-5110a",
+        "service": "http",
+        "protocol": "tcp",
+        "port": 80,
+    },
+    {
+        "server": "lighttpd/1.4.69",
+        "html": """
+        <html>
+          <head>
+            <title>Hikvision DS-2CD2143G0-I</title>
+            <meta name="generator" content="Firmware v5.7.12">
+            <meta property="og:site_name" content="Hikvision Camera">
+          </head>
+        </html>
+        """,
+        "favicon": b"hikvision-ds-2cd2143g0-i",
+        "service": "https",
+        "protocol": "tcp",
+        "port": 8443,
+    },
+    {
+        "server": "GoAhead-Webs",
+        "html": """
+        <html>
+          <head>
+            <title>Siemens S7-1200</title>
+            <meta name="description" content="PLC firmware version 4.5.1">
+          </head>
+        </html>
+        """,
+        "favicon": b"siemens-s7-1200",
+        "service": "http",
+        "protocol": "tcp",
+        "port": 8080,
+    },
+]
 
 
 def _iso_now() -> str:
@@ -69,6 +136,12 @@ class OpsRuntimeStore:
                 severity = _SEVERITIES[rnd.randint(0, len(_SEVERITIES) - 1)]
                 ip = f"100.{(idx * 7) % 250}.{(idx * 11) % 250}.{(10 + idx) % 250}"
                 device_id = f"dev-{self._scan_runs}-{idx}"
+                profile = _WEB_PROFILES[idx % len(_WEB_PROFILES)]
+                web_fingerprint = build_web_fingerprint(
+                    server_header=str(profile["server"]),
+                    html=str(profile["html"]),
+                    favicon_bytes=bytes(profile["favicon"]),
+                )
 
                 lat = round(base_lat + rnd.uniform(-0.9, 0.9), 4)
                 lon = round(base_lon + rnd.uniform(-0.9, 0.9), 4)
@@ -82,6 +155,25 @@ class OpsRuntimeStore:
                         "latitude": lat,
                         "longitude": lon,
                         "severity": severity,
+                        "services": [
+                            {
+                                "port": int(profile["port"]),
+                                "protocol": str(profile["protocol"]),
+                                "service": str(profile["service"]),
+                                "banner": str(profile["server"]),
+                            }
+                        ],
+                        "fingerprints": {
+                            "favicon_hash": web_fingerprint["favicon_hash"],
+                            "http_server": web_fingerprint["http_server"],
+                            "html_title": web_fingerprint["html_title"],
+                            "html_metadata": web_fingerprint["html_metadata"],
+                        },
+                        "iot_metadata": {
+                            "vendor": None,
+                            "model": web_fingerprint["model_hint"],
+                            "firmware": web_fingerprint["firmware_hint"],
+                        },
                     }
                 )
 

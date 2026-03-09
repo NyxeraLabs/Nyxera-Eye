@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,13 +20,25 @@ export function TopNav() {
   const { user, logout } = useAuth();
   return (
     <header className="sticky top-0 z-40 border-b border-emerald-400/20 bg-black/80 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-emerald-300">Nyxera Eye · Ops</p>
-          <p className="text-sm text-slate-300">Offensive Security Command Surface</p>
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:px-8 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex shrink-0 items-center">
+            <Image
+              src="/nyxera-eye-logo.png"
+              alt="Nyxera Eye"
+              width={144}
+              height={56}
+              priority
+              className="h-12 w-auto sm:h-14"
+            />
+          </Link>
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-emerald-300">Nyxera Eye · Ops</p>
+            <p className="text-sm text-slate-300">Offensive Security Command Surface</p>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <nav className="flex items-center gap-2">
+        <div className="flex flex-col gap-3 xl:items-end">
+          <nav className="flex flex-wrap items-center gap-2">
             {links.map((link) => {
               const active = pathname === link.href;
               return (

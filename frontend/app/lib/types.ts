@@ -1,5 +1,25 @@
 export type Severity = "critical" | "high" | "medium" | "low";
 
+export type AssetService = {
+  port: number;
+  protocol: string;
+  service: string;
+  banner: string;
+};
+
+export type AssetFingerprint = {
+  faviconHash: string;
+  httpServer: string;
+  htmlTitle: string;
+  htmlMetadata: Record<string, string>;
+};
+
+export type AssetIoTMetadata = {
+  vendor: string;
+  model: string;
+  firmware: string;
+};
+
 export type DeviceLocation = {
   id: string;
   name: string;
@@ -8,6 +28,9 @@ export type DeviceLocation = {
   lon: number;
   severity: Severity;
   country: string;
+  services?: AssetService[];
+  fingerprints?: AssetFingerprint | null;
+  iotMetadata?: AssetIoTMetadata | null;
 };
 
 export type EventLocation = {

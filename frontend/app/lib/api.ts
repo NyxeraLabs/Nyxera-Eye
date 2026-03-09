@@ -55,6 +55,32 @@ function normalizeDevices(input: unknown): DeviceLocation[] {
       lon: Number(record.longitude ?? record.lon ?? 0),
       severity: normalizeSeverity(record.severity),
       country: String(record.country || "N/A"),
+      services: Array.isArray(record.services)
+        ? (record.services as Array<Record<string, unknown>>).map((service) => ({
+            port: Number(service.port ?? 0),
+            protocol: String(service.protocol || "tcp"),
+            service: String(service.service || "unknown"),
+            banner: String(service.banner || ""),
+          }))
+        : [],
+      fingerprints:
+        record.fingerprints && typeof record.fingerprints === "object"
+          ? {
+              faviconHash: String((record.fingerprints as Record<string, unknown>).favicon_hash || ""),
+              httpServer: String((record.fingerprints as Record<string, unknown>).http_server || ""),
+              htmlTitle: String((record.fingerprints as Record<string, unknown>).html_title || ""),
+              htmlMetadata:
+                ((record.fingerprints as Record<string, unknown>).html_metadata as Record<string, string> | undefined) || {},
+            }
+          : null,
+      iotMetadata:
+        record.iot_metadata && typeof record.iot_metadata === "object"
+          ? {
+              vendor: String((record.iot_metadata as Record<string, unknown>).vendor || ""),
+              model: String((record.iot_metadata as Record<string, unknown>).model || ""),
+              firmware: String((record.iot_metadata as Record<string, unknown>).firmware || ""),
+            }
+          : null,
     };
   });
 }

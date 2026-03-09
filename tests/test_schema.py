@@ -52,3 +52,4 @@ def test_schema_migration_maps_legacy_fields() -> None:
     assert migrated["organization"] == "Legacy ISP"
     assert migrated["services"][0]["port"] == 80
     assert migrated["media"]["snapshot"] == "s3://bucket/snap.jpg"
+    assert migrated["fingerprints"]["html_metadata"] == {}
