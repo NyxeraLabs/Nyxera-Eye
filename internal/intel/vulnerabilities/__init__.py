@@ -12,8 +12,7 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from web.assets.fingerprint_panel import render_fingerprint_panel
-from web.assets.vulnerability_badges import render_vulnerability_badges
-from web.assets.vendor_table import render_vendor_table
+from internal.intel.vulnerabilities.lookup import CVERecord, VulnerabilityLookupEngine
+from internal.intel.vulnerabilities.risk import calculate_asset_risk_score
 
-__all__ = ["render_fingerprint_panel", "render_vendor_table", "render_vulnerability_badges"]
+__all__ = ["CVERecord", "VulnerabilityLookupEngine", "calculate_asset_risk_score"]

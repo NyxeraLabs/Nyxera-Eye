@@ -12,6 +12,6 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from internal.database.models.asset import AssetFingerprintRecord, AssetRecord
+from internal.database.models.asset import AssetFingerprintRecord, AssetRecord, AssetVulnerabilityRecord
 
-__all__ = ["AssetFingerprintRecord", "AssetRecord"]
+__all__ = ["AssetFingerprintRecord", "AssetRecord", "AssetVulnerabilityRecord"]

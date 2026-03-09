@@ -12,8 +12,8 @@
 # ✘ Offer as a commercial service
 # ✘ Sell derived competing products
 
-from web.assets.fingerprint_panel import render_fingerprint_panel
-from web.assets.vulnerability_badges import render_vulnerability_badges
-from web.assets.vendor_table import render_vendor_table
+from __future__ import annotations
 
-__all__ = ["render_fingerprint_panel", "render_vendor_table", "render_vulnerability_badges"]
+
+def calculate_asset_risk_score(cvss: float, vulnerability_count: int, exposure_level: float = 1.0) -> float:
+    return round(cvss + vulnerability_count * 0.75 + exposure_level, 2)

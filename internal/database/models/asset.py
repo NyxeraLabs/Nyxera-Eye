@@ -26,8 +26,20 @@ class AssetFingerprintRecord:
 
 
 @dataclass(slots=True)
+class AssetVulnerabilityRecord:
+    cve_id: str
+    service: str
+    version: str
+    severity: str
+    summary: str
+    cvss: float
+
+
+@dataclass(slots=True)
 class AssetRecord:
     asset_id: str
     ip: str
     vendor: str | None = None
+    risk_score: float | None = None
     fingerprint: AssetFingerprintRecord = field(default_factory=AssetFingerprintRecord)
+    vulnerabilities: list[AssetVulnerabilityRecord] = field(default_factory=list)

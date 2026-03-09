@@ -20,6 +20,7 @@ def build_asset_response(record: AssetRecord) -> dict[str, object]:
         "asset_id": record.asset_id,
         "ip": record.ip,
         "vendor": record.vendor,
+        "risk_score": record.risk_score,
         "fingerprint": {
             "favicon_hash": record.fingerprint.favicon_hash,
             "http_server": record.fingerprint.http_server,
@@ -28,4 +29,15 @@ def build_asset_response(record: AssetRecord) -> dict[str, object]:
             "model_hint": record.fingerprint.model_hint,
             "firmware_hint": record.fingerprint.firmware_hint,
         },
+        "vulnerabilities": [
+            {
+                "cve_id": item.cve_id,
+                "service": item.service,
+                "version": item.version,
+                "severity": item.severity,
+                "summary": item.summary,
+                "cvss": item.cvss,
+            }
+            for item in record.vulnerabilities
+        ],
     }

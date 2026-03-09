@@ -14,7 +14,7 @@
 
 from pathlib import Path
 
-from internal.database.models import AssetFingerprintRecord, AssetRecord
+from internal.database.models import AssetFingerprintRecord, AssetRecord, AssetVulnerabilityRecord
 from internal.database.repository import AssetRepository
 
 
@@ -28,6 +28,7 @@ def test_asset_repository_persists_fingerprint_data(tmp_path: Path) -> None:
             asset_id="asset-1",
             ip="203.0.113.10",
             vendor="Axis Communications",
+            risk_score=9.7,
             fingerprint=AssetFingerprintRecord(
                 favicon_hash="12345",
                 http_server="nginx/1.25.3",
@@ -36,6 +37,16 @@ def test_asset_repository_persists_fingerprint_data(tmp_path: Path) -> None:
                 model_hint="Axis P3225-LV",
                 firmware_hint="10.12.3",
             ),
+            vulnerabilities=[
+                AssetVulnerabilityRecord(
+                    cve_id="CVE-2026-1000",
+                    service="http",
+                    version="1.0.4",
+                    severity="high",
+                    summary="Test vulnerability",
+                    cvss=8.1,
+                )
+            ],
         )
     )
 
@@ -44,8 +55,10 @@ def test_asset_repository_persists_fingerprint_data(tmp_path: Path) -> None:
     assert fetched is not None
     assert fetched.ip == "203.0.113.10"
     assert fetched.vendor == "Axis Communications"
+    assert fetched.risk_score == 9.7
     assert fetched.fingerprint.favicon_hash == "12345"
     assert fetched.fingerprint.http_server == "nginx/1.25.3"
     assert fetched.fingerprint.html_metadata["generator"] == "Firmware 10.12.3"
     assert fetched.fingerprint.model_hint == "Axis P3225-LV"
     assert fetched.fingerprint.firmware_hint == "10.12.3"
+    assert fetched.vulnerabilities[0].cve_id == "CVE-2026-1000"
