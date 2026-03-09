@@ -355,9 +355,9 @@ SNMP enumeration (safe mode only)
 Tasks:
 
 ```
-[ ] commit: ONVIF discovery module
-[ ] commit: RTSP metadata probe
-[ ] commit: SNMP MIB metadata extraction
+[x] commit: ONVIF discovery module
+[x] commit: RTSP metadata probe
+[x] commit: SNMP MIB metadata extraction
 ```
 
 Geolocation enrichment:
