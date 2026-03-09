@@ -421,9 +421,9 @@ Textual
 Features:
 
 ```
-[ ] commit: keyboard navigation
-[ ] commit: search-as-you-type
-[ ] commit: MongoDB query interface
+[x] commit: keyboard navigation
+[x] commit: search-as-you-type
+[x] commit: MongoDB query interface
 ```
 
 Shortcuts:
