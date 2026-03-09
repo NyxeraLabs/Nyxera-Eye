@@ -24,6 +24,7 @@ from nyxera_eye.api.models import SearchFilters
 from nyxera_eye.api.opensearch import OpenSearchQueryService
 from nyxera_eye.api.target_cards import build_target_card
 from nyxera_eye.api.command_center import (
+    build_ops_feed,
     build_global_exposure_map_points,
     build_mining_telemetry,
     build_vulnerability_distribution,
@@ -145,3 +146,7 @@ if FastAPI is not None:
             storage_growth_gb=storage_growth_gb,
         )
         return export_prometheus(metrics)
+
+    @app.get("/frontend/ops-feed")
+    async def frontend_ops_feed(_: TokenRecord = Depends(_require_analyst)) -> dict:
+        return build_ops_feed()

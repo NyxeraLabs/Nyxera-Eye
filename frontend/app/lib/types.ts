@@ -28,3 +28,19 @@ export type Finding = {
   severity: Severity;
   deviceId: string;
 };
+
+export type OpsMetrics = {
+  queueDepth: number;
+  miningThroughput: number;
+  probeSuccessRate: number;
+  storageGrowthGb: number;
+};
+
+export type OpsFeed = {
+  generatedAt: string;
+  devices: DeviceLocation[];
+  events: EventLocation[];
+  findings: Finding[];
+  metrics: OpsMetrics;
+  source: "api" | "fallback";
+};
